@@ -1,0 +1,19 @@
+{
+  "name": "flwc",
+  "version": "0.0.1",
+  "description": "Another Flow Control library for JS",
+  "main": "flw.js",
+  "scripts": {
+    "test": "mocha",
+    "tdd": "mocha -w"
+  },
+  "dependencies": {
+    "debug": "2.2.0"
+  },
+  "devDependencies": {
+    "expect.js": "0.3.1",
+    "mocha": "2.4.5"
+  },
+  "author": "Paul Wijhenke <paul@paulsplace.nl>",
+  "license": "MIT"
+}
