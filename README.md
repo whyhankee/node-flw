@@ -22,11 +22,11 @@ The major change is that during the flow control a context object is passed to a
 
 An example handler looks like this:
 
-	function pre_a(context, cb) {
-		context.something = {userId: 1};
-		debug('handler, current context', context);
-		return cb();
-	}
+  	function pre_a(context, cb) {
+  		context.something = {userId: 1};
+  		debug('handler, current context', context);
+  		return cb();
+  	}
 
 A flow could be called with:
 
@@ -34,7 +34,9 @@ A flow could be called with:
       fc.makeParallel(pre_a, pre_b),
       fc.makeSeries(work_a, work_b),
       fc.makeParallel(post_a, post_b)
-    ], onFlowDone);
+    ], function (err, context) {
+      ....
+    });
 
 
 ## Disclaimer / Current state
