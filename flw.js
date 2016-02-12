@@ -7,39 +7,41 @@ function series(fns, context, done) {
     done = context;
     context = {};
   }
-  var i = 0;
+  var fnIterator = 0;
   var num = fns.length;
 
-  debug("series done", done.name);
-  callFunction();
+  debug("series done function: "+ done.name || '<anonymous>');
+  return callFunction();
 
   function callFunction() {
-    debug("series call", fns[i].name);
-    setImmediate(fns[i], context, onSeriesCallDone);
+    debug("series call", fns[fnIterator].name);
+    setImmediate(fns[fnIterator], context, onSeriesCallDone);
   }
   function onSeriesCallDone(err) {
-    if (err) return done(err, context);
+    if (err) return done(err);
 
-    if (++i >= num) return done(null, context);
-    callFunction();
+    if (++fnIterator >= num) return done(null, context);
+    return callFunction();
   }
 }
 
 
 function makeSeries() {
   var fns = [];
-  var i =0;
-  while (arguments[i]) {
-    fns.push(arguments[i++]);
+  var fnIterator =0;
+  while (arguments[fnIterator]) {
+    fns.push(arguments[fnIterator++]);
   }
 
   var f = function seriesFunction(context, done) {
-    if (done === undefined && typeof context==='function') {
+    if (done === undefined && typeof context === 'function') {
       done = context;
       context = {};
     }
-    if (typeof done !== 'function') throw new Error('done !== function');
-    series(fns, context, done);
+    if (typeof done !== 'function') {
+      throw new Error('seriesFunction - done !== function');
+    }
+    return series(fns, context, done);
   };
   return f;
 }
@@ -54,7 +56,7 @@ function parallel(fns, context, done) {
   var numDone = 0;
   var doneCalled = false;
 
-  debug("parallel done", done.name);
+  debug("parallel done function: "+ done.name || '<anonymous>');
 
   fns.forEach(function (fn) {
     debug("parallel call", fn.name);
@@ -77,9 +79,9 @@ function parallel(fns, context, done) {
 
 function makeParallel() {
   var fns = [];
-  var i =0;
-  while (arguments[i]) {
-    fns.push(arguments[i++]);
+  var fnIterator =0;
+  while (arguments[fnIterator]) {
+    fns.push(arguments[fnIterator++]);
   }
   var f = function parallelFunction(context, done) {
     if (done === undefined && typeof context==='function') {
@@ -87,14 +89,12 @@ function makeParallel() {
       context = {};
     }
     if (typeof done !== 'function') throw new Error('done !== function');
-    parallel(fns, context, done);
+    return parallel(fns, context, done);
   };
   return f;
 }
 
 
-// Exports
-//
 module.exports = {
   series: series,
   makeSeries: makeSeries,

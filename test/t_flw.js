@@ -42,12 +42,13 @@ describe('basic operations', function () {
     });
   });
 
-  it('All together now', function (done) {
-    var pre = fc.makeParallel(pre_a, pre_b);
-    var work = fc.makeSeries(work_a, work_b);
-    var post = fc.makeParallel(post_a, post_b);
-    var allWork = fc.makeSeries(pre, work, post);
-    allWork(function onAllWorkDone(err, context) {
+  it('combination flow', function (done) {
+    fc.series([
+      fc.makeParallel(pre_a, pre_b),
+      fc.makeSeries(work_a, work_b),
+      fc.makeParallel(post_a, post_b)
+    ], onFlowDone);
+    function onFlowDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.eql({
         pre_a: 'pre_a', pre_b: 'pre_b',
@@ -55,7 +56,7 @@ describe('basic operations', function () {
         post_a: 'post_a', post_b: 'post_b'
       });
       return done();
-    });
+    }
   });
 });
 
