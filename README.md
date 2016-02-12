@@ -21,6 +21,10 @@ This is an experiment with async flow control while keeping a context object dur
 
     npm install flw
 
+# Tests and development
+
+    DEBUG=flw* npm run tdd
+
 # Example
 
     var flw = requrie('flw');
