@@ -22,9 +22,9 @@ The major change is that during the flow control a context object is passed to a
 
 An example handler looks like this:
 
-	function getSomething(context, cb) {
+	function pre_a(context, cb) {
 		context.something = {userId: 1};
-		debug('getSomething, current context', context);
+		debug('handler, current context', context);
 		return cb();
 	}
 
