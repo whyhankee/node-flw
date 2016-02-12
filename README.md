@@ -1,70 +1,61 @@
 # flw
 
-Another flow control library, inspired by Async and Bach.
-
-## Why
-
-Async is the defacto standard for async flow control. However, i'm always struggling with combinations of `.auto`, `.series`, `.parallel`, `.waterfall` and keeping references to the results from the called functions.
-
-So, the major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions.
+Another flow control library, inspired by `async` and `bach`.
 
 
-# Disclaimer
+### What / Why
 
-This is an experiment with async flow control while keeping a context object during the processes.
+`async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
 
-# Current state
+* I'm always struggling with combinations of `auto`, `series`, `parallel`, `waterfall` and keeping references to the results from the called functions. It seems to boil down to either:
+  	* Make variables in an outer scope to assign them too
+	* Dragging everything with you in a waterfall
+	* Use `async.auto`, gives you a context object, but not really easy to read / maintain
 
-  **do not use** - Just playing
+* Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
+* Optionally being able to stop the flow without abusing the `err` mechanism.
+* optional beforeEach and afterEach handlers (for easy debug inspection).
 
-# Installation
+### How
+
+The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. No need to return anything other than errors.
+
+An example handler looks like this:
+
+	function getSomething(context, cb) {
+		context.something = {userId: 1};
+		debug('getSomething, current context', context);
+		return cb();
+	}
+
+A flow could be called with:
+
+    fc.series([
+      fc.makeParallel(pre_a, pre_b),
+      fc.makeSeries(work_a, work_b),
+      fc.makeParallel(post_a, post_b)
+    ], onFlowDone);
+
+
+## Disclaimer / Current state
+
+  ** Only for playing around** - API's could still change.
+
+  Note: for last-updates it's better to use the github repository directly.
+
+### Todo list
+
+* stop flow
+* `beforeEach` and `afterEach` handlers
+
+
+## Installation
 
     npm install flw
 
-# Tests and development
+## API
 
-    DEBUG=flw* npm run tdd
-
-# Example
-
-    var flw = requrie('flw');
-
-  simple series:
-
-    function a(ctx, cb) { ctx.a = 'a'; return cb() };
-    function b(ctx, cb) { ctx.b = 'b'; return cb() };
-
-    flw.series([a, b], function(err, context)) {
-      console.log(err, context);  // null, {a: 'a', b: 'b'}
-    });
-
-  or:
-
-    var ourSeries = flw.makeSeries(a, b);
-    ourSeries(function (err, ctx) {
-      console.log(err, ctx);      // null, {a: 'a', b: 'b'}
-    });
-
-  more fun combinations (using fictional functions here)
-
-    var preWork = flw.makeParallel(preWork1, preWork2);
-    var work = flw.makeSeries(work1, work2);
-    var postWork = flw.makeParallel(postWork1, postWork2);
-
-    flw.series([preWork, work, postWork], function(err, context)) {
-      console.log(err, context);
-    });
-
-  or:
-
-    var allWork = flw.series(preWork, work, postWork);
-    allWork(function (err, context) {
-      console.log(err, context);
-    });
-
-# API
-
-## .series([fn, fn], done)
+### .series([fn, fn], done)
 
   example:
 
@@ -72,7 +63,7 @@ This is an experiment with async flow control while keeping a context object dur
       console.log(err, results;)
     });
 
-## .makeSeries(fn, fn, ...)
+### .makeSeries(fn, fn, ...)
 
 example:
 
@@ -81,7 +72,7 @@ example:
       console.log(err, results;)
     });
 
-## .parallel([fn, fn], done)
+### .parallel([fn, fn], done)
 
 example:
 
@@ -89,7 +80,7 @@ example:
       console.log(err, results;)
     });
 
-## .makeParallel(fn, fn, ...)
+### .makeParallel(fn, fn, ...)
 
 example:
 
@@ -97,3 +88,8 @@ example:
     ourSeries( function onDone(err, results) {
       console.log(err, results;)
     });
+
+
+## Tests and development
+
+    DEBUG=flw* npm run tdd
