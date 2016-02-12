@@ -42,7 +42,6 @@ describe('basic operations', function () {
     });
   });
 
-
   it('All together now', function (done) {
     var pre = fc.makeParallel(pre_a, pre_b);
     var work = fc.makeSeries(work_a, work_b);
@@ -80,7 +79,7 @@ function work_a(context, cb) {
   expect(context.post_a).to.be(undefined);
   expect(context.post_b).to.be(undefined);
   context.work_a = 'work_a';
-  debug('work', context);
+  debug('work_a', context);
   return cb();
 }
 
@@ -90,7 +89,7 @@ function work_b(context, cb) {
   expect(context.post_a).to.be(undefined);
   expect(context.post_b).to.be(undefined);
   context.work_b = 'work_b';
-  debug('work', context);
+  debug('work_b', context);
   return cb();
 }
 

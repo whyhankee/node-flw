@@ -11,9 +11,9 @@ function series(fns, context, done) {
   var num = fns.length;
 
   debug("series done", done.name);
-  _call();
+  callFunction();
 
-  function _call() {
+  function callFunction() {
     debug("series call", fns[i].name);
     setImmediate(fns[i], context, onSeriesCallDone);
   }
@@ -21,7 +21,7 @@ function series(fns, context, done) {
     if (err) return done(err, context);
 
     if (++i >= num) return done(null, context);
-    _call();
+    callFunction();
   }
 }
 

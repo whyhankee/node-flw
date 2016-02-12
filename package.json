@@ -1,16 +1,16 @@
 {
-  "name": "flwc",
-  "version": "0.0.1",
+  "name": "flw",
+  "version": "0.0.0",
   "description": "Another Flow Control library for JS",
   "main": "flw.js",
   "scripts": {
     "test": "mocha",
     "tdd": "mocha -w"
   },
-  "homepage": "https://github.com/whyhankee/flw",
+  "homepage": "https://github.com/whyhankee/wrkr",
   "repository": {
     "type": "git",
-    "url": "git@github.com:whyhankee/flw.git"
+    "url": "git@github.com:whyhankee/wrkr.git"
   },
   "dependencies": {
     "debug": "2.2.0"
