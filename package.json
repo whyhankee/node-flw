@@ -7,6 +7,11 @@
     "test": "mocha",
     "tdd": "mocha -w"
   },
+  "homepage": "https://github.com/whyhankee/flw",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:whyhankee/flw.git"
+  },
   "dependencies": {
     "debug": "2.2.0"
   },
