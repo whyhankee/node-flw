@@ -14,7 +14,8 @@ Another flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 * Optionally being able to stop the flow without abusing the `err` mechanism.
-* optional beforeEach and afterEach handlers (for easy debug inspection).
+* optional beforeEach and afterEach handlers (not sure)
+
 
 ### How
 
@@ -30,7 +31,7 @@ An example handler looks like this:
 
 A flow could be called with:
 
-    fc.series([
+    flw.series([
       fc.makeParallel(pre_a, pre_b),
       fc.makeSeries(work_a, work_b),
       fc.makeParallel(post_a, post_b)
@@ -48,7 +49,7 @@ A flow could be called with:
 ### Todo list
 
 * stop flow
-* `beforeEach` and `afterEach` handlers
+* `beforeEach` and `afterEach` handlers?
 
 
 ## Installation
