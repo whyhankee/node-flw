@@ -2,6 +2,8 @@
 
 Another flow control library, inspired by `async` and `bach`.
 
+[![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
+
 
 ### What / Why
 
