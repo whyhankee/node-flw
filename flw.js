@@ -66,10 +66,10 @@ function make() {
 
   // takes a function and wraps it so that execution is 'postponed'
   function _make(fn) {
-    return function madeFunction() { // the user calls this function, e.g. flw.make.series(...)
-      var fns = Array.prototype.slice.call(arguments); //arguments -> array: https://davidwalsh.name/arguments-array
-
-      return function flowFunction(context, done) { // this function is consumed by flw
+    // the user calls this function, e.g. flw.make.series(...)
+    return function madeFunction(fns) {
+      // this function is consumed by flw
+      return function flowFunction(context, done) {
         if (done === undefined && typeof context === 'function') {
           done = context;
           context = {};

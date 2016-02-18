@@ -33,9 +33,9 @@ An example handler looks like this:
 A flow could be called with:
 
     flw.series([
-      flw.make.parallel(pre_a, pre_b),
-      flw.make.series(work_a, work_b),
-      flw.make.parallel(post_a, post_b)
+      flw.make.parallel([pre_a, pre_b]),
+      flw.make.series([work_a, work_b]),
+      flw.make.parallel([post_a, post_b])
     ], function (err, context) {
       ....
     });
@@ -83,7 +83,7 @@ functions or having to `bind` them.
 
   example:
 
-    var ourSeries = flw.make.series(a, b, c);
+    var ourSeries = flw.make.series([a, b, c]);
     ourSeries(function onDone(err, results) {
       console.log(err, results;)
     });
@@ -91,9 +91,9 @@ functions or having to `bind` them.
   example:
 
     flw.series([
-      flw.make.parallel(a, b),
-      flw.make.series(c, d, e),
-      flw.make.parallel(f, g, h, i)
+      flw.make.parallel([a, b]),
+      flw.make.series([c, d, e]),
+      flw.make.parallel([f, g, h, i])
     ], onDone);
 
 ## Tests and development

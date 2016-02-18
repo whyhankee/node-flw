@@ -17,7 +17,7 @@ describe('basic operations', function () {
   });
 
   it('.make.series', function (done) {
-    var fn = fc.make.series(pre_a, pre_b);
+    var fn = fc.make.series([pre_a, pre_b]);
     fn(function onMakeSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
@@ -34,7 +34,7 @@ describe('basic operations', function () {
   });
 
   it('.make.parallel', function (done) {
-    var fn = fc.make.parallel(pre_a, pre_b);
+    var fn = fc.make.parallel([pre_a, pre_b]);
     fn(function onMakeParallelDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
@@ -44,9 +44,9 @@ describe('basic operations', function () {
 
   it('combination flow', function (done) {
     fc.series([
-      fc.make.parallel(pre_a, pre_b),
-      fc.make.series(work_a, work_b),
-      fc.make.parallel(post_a, post_b)
+      fc.make.parallel([pre_a, pre_b]),
+      fc.make.series([work_a, work_b]),
+      fc.make.parallel([post_a, post_b])
     ], onFlowDone);
     function onFlowDone(err, context) {
       expect(err).to.be(null);
