@@ -97,3 +97,7 @@ example:
 ## Tests and development
 
     DEBUG=flw* npm run tdd
+
+Also, please don't forget to check this when you submit a PR
+
+    npm run benchmark

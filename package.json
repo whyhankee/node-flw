@@ -4,8 +4,9 @@
   "description": "Another Flow Control library for JS",
   "main": "flw.js",
   "scripts": {
-    "test": "mocha",
-    "tdd": "mocha -w"
+    "test": "mocha test/t_flw.js",
+    "tdd": "mocha -w test/t_flw.js",
+    "benchmark": "node ./test/b_flw.js"
   },
   "homepage": "https://github.com/whyhankee/flw",
   "repository": {
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "expect.js": "0.3.1",
+    "fastbench": "1.0.0",
     "mocha": "2.4.5"
   },
   "author": "Paul Wijhenke <paul@paulsplace.nl>",

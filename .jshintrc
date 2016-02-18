@@ -8,6 +8,5 @@
   "eqeqeq": true,
   "latedef":"nofunc",
   "maxlen": 89,
-  "newcap": true,
-  "strict": true
+  "newcap": true
 }
