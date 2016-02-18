@@ -11,7 +11,8 @@ describe('basic operations', function () {
   it('.series', function (done) {
     fc.series([pre_a, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
-      expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
       return done();
     });
   });
@@ -20,7 +21,8 @@ describe('basic operations', function () {
     var fn = fc.makeSeries(pre_a, pre_b);
     fn(function onMakeSeriesDone(err, context) {
       expect(err).to.be(null);
-      expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
       return done();
     });
   });
@@ -28,7 +30,8 @@ describe('basic operations', function () {
   it('.parallel', function (done) {
     fc.parallel([pre_a, pre_b], function onParallelDone(err, context) {
       expect(err).to.be(null);
-      expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
       return done();
     });
   });
@@ -37,7 +40,8 @@ describe('basic operations', function () {
     var fn = fc.makeParallel(pre_a, pre_b);
     fn(function onMakeParallelDone(err, context) {
       expect(err).to.be(null);
-      expect(context).to.eql({pre_a: 'pre_a', pre_b: 'pre_b'});
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
       return done();
     });
   });
@@ -50,12 +54,34 @@ describe('basic operations', function () {
     ], onFlowDone);
     function onFlowDone(err, context) {
       expect(err).to.be(null);
-      expect(context).to.eql({
-        pre_a: 'pre_a', pre_b: 'pre_b',
-        work_a: 'work_a', work_b: 'work_b',
-        post_a: 'post_a', post_b: 'post_b'
-      });
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      expect(context).to.have.property('work_a', 'work_a');
+      expect(context).to.have.property('work_b', 'work_b');
+      expect(context).to.have.property('post_a', 'post_a');
+      expect(context).to.have.property('post_b', 'post_b');
       return done();
+    }
+  });
+
+  it('stores result from cb', function (done) {
+    var userData = {id: 12345, 'name': 'username'};
+
+    fc.series([storeUser], function (err, c) {
+      expect(err).to.be(null);
+      expect(c.user).to.eql(userData);
+      return done();
+    });
+
+    function storeUser(context, cb) {
+      // simulate a user.save() like method,
+      //  passing c.store() as the cb (with the actual cb)
+      saveSomething(context._flw_store('user', cb));
+    }
+    function saveSomething(cb) {
+      setImmediate(function (_cb, userData) {
+        return _cb(null, userData);
+      }, cb, userData);
     }
   });
 });
