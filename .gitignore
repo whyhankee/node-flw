@@ -2,3 +2,6 @@
 npm-debug.log
 
 node_modules/
+
+# Circle CI - From  mocha-circleci-reporter
+test-results.xml
