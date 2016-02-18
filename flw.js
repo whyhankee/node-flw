@@ -3,15 +3,35 @@ var debug = require('debug')('flw');
 
 var fnMap = {};
 
+function _makeContext() {
+  var c = {};
+
+  c._flw_store = function _flw_store(key, cb) {
+    var self = this;
+
+    var fn = function (err, data) {
+      if (err) return cb(err);
+
+      debug('_flw_store', key, data);
+      self[key] = data;
+      return cb();
+    };
+    return fn;
+  };
+
+  return c;
+}
+
+
 fnMap.series = function series(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
-    context = {};
+    context = _makeContext();
   }
   var fnIterator = 0;
   var num = fns.length;
 
-  debug("series done function: "+ done.name || '<anonymous>');
+  debug("series done function: "+done.name || '<anonymous>');
   return callFunction();
 
   function callFunction() {
@@ -30,14 +50,13 @@ fnMap.series = function series(fns, context, done) {
 fnMap.parallel = function parallel(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
-    context = {};
+    context = _makeContext();
   }
   var num = fns.length;
   var numDone = 0;
   var doneCalled = false;
 
   debug("parallel done function: "+ done.name || '<anonymous>');
-
   fns.forEach(function (fn) {
     debug("parallel call", fn.name);
     setImmediate(fn, context, onParallelCallDone);
@@ -72,7 +91,7 @@ function make() {
       return function flowFunction(context, done) {
         if (done === undefined && typeof context === 'function') {
           done = context;
-          context = {};
+          context = _makeContext();
         }
         if (typeof done !== 'function') {
           throw new Error('_make - done !== function');
