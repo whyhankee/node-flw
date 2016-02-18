@@ -3,6 +3,7 @@ var debug = require('debug')('flw');
 
 var fnMap = {};
 
+
 function _makeContext() {
   var c = {};
 
@@ -75,6 +76,7 @@ fnMap.parallel = function parallel(fns, context, done) {
   }
 };
 
+
 function make() {
   // create a map of all flow functions wrapped by _make
   var makeFnMap = {};
@@ -101,6 +103,7 @@ function make() {
     };
   }
 }
+
 
 Object.keys(fnMap).forEach(function(key) {
   module.exports[key] = fnMap[key];
