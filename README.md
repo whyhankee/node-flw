@@ -104,3 +104,23 @@ functions or having to `bind` them.
 Also, please don't forget to check this when you submit a PR
 
     npm run benchmark
+
+
+## Changelog
+
+  v0.0.3
+
+    * Changed syntax of makeParallel() & makeSerial() to make.serial() & make.parallel()
+      Thanks @godspeedelbow
+    * Changed function signature of make.* (always use arrays)
+    * added context.flw_store() method
+    * Added to CircleCI and show badge
+    * Added benchmarks
+
+  v0.0.2
+
+    * Cleanup
+
+  v0.0.1
+
+    * Initial commit
