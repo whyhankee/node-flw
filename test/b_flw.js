@@ -17,18 +17,18 @@ var run = bench([
   },
 
   function makeSeries (done) {
-    var fn = flw.makeSeries(handler, handler, handler);
+    var fn = flw.make.series(handler, handler, handler);
     fn(done);
   },
   function makeParallel (done) {
-    var fn = flw.makeParallel(handler, handler, handler);
+    var fn = flw.make.parallel(handler, handler, handler);
     fn(done);
   },
 
   function combined (done) {
     flw.series([
-      flw.makeParallel(handler, handler, handler),
-      flw.makeSeries(handler, handler, handler)
+      flw.make.parallel(handler, handler, handler),
+      flw.make.series(handler, handler, handler)
     ], done);
   },
 
