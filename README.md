@@ -18,7 +18,7 @@ Another flow control library, inspired by `async` and `bach`.
 
 	* Assign the results to variables in an outer scope - yuck
 	* Dragging everything with you in a waterfall during the entire flow - yuck
-	* Use `async.auto`, close, but dependency map is easy to get wrong over time :(
+	* Use `async.auto`, close, however, the dependency map is easy to get wrong over time
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 * Stop the endless `if (err) return cb(err);` madness if you just want to keep the first value of an async operation
@@ -104,11 +104,12 @@ flw.series([
 
 ## Tests and development
 
-    DEBUG=flw* npm run tdd
+`npm run test` - for default tests
+`DEBUG=flw* npm run tdd` - for continuous reload and debug output
 
 Also, please don't forget to check this when you submit a PR
 
-    npm run benchmark
+`npm run benchmark`
 
 
 ## Changelog
