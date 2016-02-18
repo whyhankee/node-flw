@@ -5,6 +5,11 @@ Another flow control library, inspired by `async` and `bach`.
 [![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
 
 
+## Disclaimer / Current state
+
+  **It seems to work, would not use in production** - API's could still change.
+
+
 ### What / Why
 
 `async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
@@ -43,12 +48,6 @@ A flow could be called with:
       ....
     });
 
-
-## Disclaimer / Current state
-
-  ** Only for playing around** - API's could still change.
-
-  Note: for last-updates it's better to use the github repository directly.
 
 ### Ideas
 
