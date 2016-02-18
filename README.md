@@ -33,9 +33,9 @@ An example handler looks like this:
 A flow could be called with:
 
     flw.series([
-      fc.makeParallel(pre_a, pre_b),
-      fc.makeSeries(work_a, work_b),
-      fc.makeParallel(post_a, post_b)
+      flw.make.parallel(pre_a, pre_b),
+      flw.make.series(work_a, work_b),
+      flw.make.parallel(post_a, post_b)
     ], function (err, context) {
       ....
     });
@@ -67,32 +67,34 @@ A flow could be called with:
       console.log(err, results;)
     });
 
-### .makeSeries(fn, fn, ...)
-
-example:
-
-    var ourSeries = flw.makeSeries(a, b, c);
-    ourSeries( function onDone(err, results) {
-      console.log(err, results;)
-    });
-
 ### .parallel([fn, fn], done)
 
-example:
+    example:
 
     flw.parallel([a, b, c], function onDone(err, results) {
       console.log(err, results;)
-    });
+      });
 
-### .makeParallel(fn, fn, ...)
+### .make
 
-example:
+With make you can use the flow functions without them directly executing. In this
+way you can compose different flow functions without having to resort to anonymous
+functions or having to `bind` them.
 
-    var ourSeries = flw.makeParallel(a, b, c);
-    ourSeries( function onDone(err, results) {
+  example:
+
+    var ourSeries = flw.make.series(a, b, c);
+    ourSeries(function onDone(err, results) {
       console.log(err, results;)
     });
 
+  example:
+
+    flw.series([
+      flw.make.parallel(a, b),
+      flw.make.series(c, d, e),
+      flw.make.parallel(f, g, h, i)
+    ], onDone);
 
 ## Tests and development
 
