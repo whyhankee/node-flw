@@ -80,6 +80,7 @@ function parallel(fns, context, done) {
 function makeParallel() {
   var fns = [];
   var fnIterator =0;
+
   while (arguments[fnIterator]) {
     fns.push(arguments[fnIterator++]);
   }

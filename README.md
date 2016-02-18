@@ -8,7 +8,8 @@ Another flow control library, inspired by `async` and `bach`.
 `async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
 
 * I'm always struggling with combinations of `auto`, `series`, `parallel`, `waterfall` and keeping references to the results from the called functions. It seems to boil down to either:
-  	* Make variables in an outer scope to assign them too
+
+  * Make variables in an outer scope to assign them to
 	* Dragging everything with you in a waterfall
 	* Use `async.auto`, gives you a context object, but not really easy to read / maintain
 

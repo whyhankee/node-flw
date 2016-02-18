@@ -1,0 +1,13 @@
+{
+  "globals": {
+  },
+  "esnext": false,
+  "node": true,
+  "unused": true,
+  "undef": true,
+  "eqeqeq": true,
+  "latedef":"nofunc",
+  "maxlen": 89,
+  "newcap": true,
+  "strict": true
+}
