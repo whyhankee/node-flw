@@ -24,7 +24,7 @@ fnMap.series = function series(fns, context, done) {
     if (++fnIterator >= num) return done(null, context);
     return callFunction();
   }
-}
+};
 
 
 fnMap.parallel = function parallel(fns, context, done) {
@@ -54,7 +54,7 @@ fnMap.parallel = function parallel(fns, context, done) {
     if (err) return done(err);
     return done(null, context);
   }
-}
+};
 
 function make() {
   // create a map of all flow functions wrapped by _make
