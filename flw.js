@@ -1,8 +1,9 @@
 'use strict';
 var debug = require('debug')('flw');
 
+var fnMap = {};
 
-function series(fns, context, done) {
+fnMap.series = function series(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
     context = {};
@@ -26,28 +27,7 @@ function series(fns, context, done) {
 }
 
 
-function makeSeries() {
-  var fns = [];
-  var fnIterator =0;
-  while (arguments[fnIterator]) {
-    fns.push(arguments[fnIterator++]);
-  }
-
-  var f = function seriesFunction(context, done) {
-    if (done === undefined && typeof context === 'function') {
-      done = context;
-      context = {};
-    }
-    if (typeof done !== 'function') {
-      throw new Error('seriesFunction - done !== function');
-    }
-    return series(fns, context, done);
-  };
-  return f;
-}
-
-
-function parallel(fns, context, done) {
+fnMap.parallel = function parallel(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
     context = {};
@@ -76,30 +56,34 @@ function parallel(fns, context, done) {
   }
 }
 
+function make() {
+  // create a map of all flow functions wrapped by _make
+  var makeFnMap = {};
+  Object.keys(fnMap).forEach(function(key) {
+    makeFnMap[key] = _make(fnMap[key]);
+  });
+  return makeFnMap;
 
-function makeParallel() {
-  var fns = [];
-  var fnIterator =0;
+  // takes a function and wraps it so that execution is 'postponed'
+  function _make(fn) {
+    return function madeFunction() { // the user calls this function, e.g. flw.make.series(...)
+      var fns = Array.prototype.slice.call(arguments); //arguments -> array: https://davidwalsh.name/arguments-array
 
-  while (arguments[fnIterator]) {
-    fns.push(arguments[fnIterator++]);
+      return function flowFunction(context, done) { // this function is consumed by flw
+        if (done === undefined && typeof context === 'function') {
+          done = context;
+          context = {};
+        }
+        if (typeof done !== 'function') {
+          throw new Error('_make - done !== function');
+        }
+        return fn(fns, context, done);
+      };
+    };
   }
-  var f = function parallelFunction(context, done) {
-    if (done === undefined && typeof context==='function') {
-      done = context;
-      context = {};
-    }
-    if (typeof done !== 'function') throw new Error('done !== function');
-    return parallel(fns, context, done);
-  };
-  return f;
 }
 
-
-module.exports = {
-  series: series,
-  makeSeries: makeSeries,
-
-  parallel: parallel,
-  makeParallel: makeParallel
-};
+Object.keys(fnMap).forEach(function(key) {
+  module.exports[key] = fnMap[key];
+});
+module.exports.make = make();
