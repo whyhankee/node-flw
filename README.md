@@ -14,8 +14,7 @@ Another flow control library, inspired by `async` and `bach`.
 	* Use `async.auto`, gives you a context object, but not really easy to read / maintain
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
-* Optionally being able to stop the flow without abusing the `err` mechanism.
-* optional beforeEach and afterEach handlers (not sure)
+* Stop the endless `if (err) return cb(err);` madness if you just want to save the first value of an async operation
 
 
 ### How
@@ -24,16 +23,18 @@ The major change is that during the flow control a context object is passed to a
 
 An example handler looks like this:
 
-  	function pre_a(context, cb) {
-  		context.something = {userId: 1};
-  		debug('handler, current context', context);
-  		return cb();
+  	function createUser(context, cb) {
+      // add randomValue to the context;
+      context.randomValue = 'notSoRandom';
+
+      var user = new AppUser(userProps);
+  		return user.save(context._flw_store('user', cb));
   	}
 
 A flow could be called with:
 
     flw.series([
-      flw.make.parallel([pre_a, pre_b]),
+      flw.make.parallel([createUser, pre_b]),
       flw.make.series([work_a, work_b]),
       flw.make.parallel([post_a, post_b])
     ], function (err, context) {
@@ -47,10 +48,9 @@ A flow could be called with:
 
   Note: for last-updates it's better to use the github repository directly.
 
-### Todo list
+### Ideas
 
-* stop flow
-* `beforeEach` and `afterEach` handlers?
+* Being able to stop the flow without abusing the `err` mechanism.
 
 
 ## Installation
