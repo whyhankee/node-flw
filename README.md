@@ -1,16 +1,16 @@
-# flw
+## flw
 
 Another flow control library, inspired by `async` and `bach`.
+
+### Disclaimer
+
+Current state: Alpha, would not use in production - API's could still change.
 
 [![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
 
 
-## Disclaimer / Current state
 
-  **It seems to work, would not use in production** - API's could still change.
-
-
-### What / Why
+## What / Why
 
 `async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
 
@@ -21,10 +21,13 @@ Another flow control library, inspired by `async` and `bach`.
 	* Use `async.auto`, close, however, the dependency map is easy to get wrong over time
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
+
+* Be able to stop the flow.
+
 * Stop the endless `if (err) return cb(err);` madness if you just want to keep the first value of an async operation
 
 
-### How
+## How
 
 The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. No need to return anything other than errors.
 
@@ -49,11 +52,6 @@ flw.series([
   ....
 });
 ```
-
-
-### Ideas
-
-* Being able to stop the flow without abusing the `err` mechanism.
 
 
 ## Installation
@@ -105,12 +103,18 @@ flw.series([
 ## Tests and development
 
 `npm run test` - for default tests
+
 `DEBUG=flw* npm run tdd` - for continuous reload and debug output
 
 Also, please don't forget to check this when you submit a PR
 
 `npm run benchmark`
 
+
+## Todo
+
+* Being able to stop the flow without abusing the `err` mechanism.
+* Make browser compatible - support for alternative package managers like bower?
 
 ## Changelog
 
