@@ -2,13 +2,13 @@
 
 Another flow control library, inspired by `async` and `bach`.
 
+[![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/whyhankee/flw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 ### Disclaimer
 
 Current state: Alpha, would not use in production - API's could still change.
-
-[![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
-
-
 
 ## What / Why
 
