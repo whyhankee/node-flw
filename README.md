@@ -6,10 +6,6 @@ Another flow control library, inspired by `async` and `bach`.
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/whyhankee/flw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-### Disclaimer
-
-Current state: Alpha, would not use in production - API's could still change.
-
 ## What / Why
 
 `async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
@@ -114,13 +110,12 @@ Also, please don't forget to check this when you submit a PR
 ## Todo
 
 * Being able to stop the flow without abusing the `err` mechanism.
-* Make browser compatible - support for alternative package managers like bower?
 
 ## Changelog
+
 v0.0.4
 
 * Browser support (setTimeout, slow!!)
-
 
 v0.0.3
 
