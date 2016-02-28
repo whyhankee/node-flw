@@ -117,6 +117,10 @@ Also, please don't forget to check this when you submit a PR
 * Make browser compatible - support for alternative package managers like bower?
 
 ## Changelog
+v0.0.4
+
+* Browser support (setTimeout, slow!!)
+
 
 v0.0.3
 

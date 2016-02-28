@@ -1,29 +1,15 @@
 'use strict';
 var debug = require('debug')('flw');
 
+
+// Globals
 var fnMap = {};
+var _callfn = (typeof setImmediate === 'function') ? _callImmediate : _callSetTimeout;
 
 
-function _makeContext() {
-  var c = {};
-
-  c._flw_store = function _flw_store(key, cb) {
-    var self = this;
-
-    var fn = function (err, data) {
-      if (err) return cb(err);
-
-      debug('_flw_store', key, data);
-      self[key] = data;
-      return cb();
-    };
-    return fn;
-  };
-
-  return c;
-}
-
-
+/**
+ * Call functions in series (order of array)
+ */
 fnMap.series = function series(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
@@ -37,7 +23,7 @@ fnMap.series = function series(fns, context, done) {
 
   function callFunction() {
     debug("series call", fns[fnIterator].name);
-    setImmediate(fns[fnIterator], context, onSeriesCallDone);
+    _callfn(fns[fnIterator], context, onSeriesCallDone);
   }
   function onSeriesCallDone(err) {
     if (err) return done(err);
@@ -48,6 +34,9 @@ fnMap.series = function series(fns, context, done) {
 };
 
 
+/**
+ * Call functions in parallel
+ */
 fnMap.parallel = function parallel(fns, context, done) {
   if (done === undefined && typeof context === 'function') {
     done = context;
@@ -60,7 +49,7 @@ fnMap.parallel = function parallel(fns, context, done) {
   debug("parallel done function: "+ done.name || '<anonymous>');
   fns.forEach(function (fn) {
     debug("parallel call", fn.name);
-    setImmediate(fn, context, onParallelCallDone);
+    _callfn(fn, context, onParallelCallDone);
   });
 
   function onParallelCallDone(err) {
@@ -77,6 +66,9 @@ fnMap.parallel = function parallel(fns, context, done) {
 };
 
 
+/**
+ * build the list of exposed methods into the .make syntax
+ */
 function make() {
   // create a map of all flow functions wrapped by _make
   var makeFnMap = {};
@@ -105,6 +97,52 @@ function make() {
 }
 
 
+/**
+ * Call functions with setImmediate
+ * @private
+ */
+function _callImmediate(fn, context, cb) {
+  setImmediate(fn, context, cb);
+}
+
+
+/**
+ * Call functions with setTimeout (slow! - for browser support)
+ * @private
+ */
+function _callSetTimeout(fn, context, cb) {
+  setTimeout(fn, 0, context, cb);
+}
+
+
+/**
+ * Create a new Flw context when a flow is starting
+ * @private
+ */
+function _makeContext() {
+  var c = {};
+
+  c._flw_store = function _flw_store(key, cb) {
+    var self = this;
+
+    var fn = function (err, data) {
+      if (err) return cb(err);
+
+      debug('_flw_store', key, data);
+      self[key] = data;
+      return cb();
+    };
+    return fn;
+  };
+
+  return c;
+}
+
+
+
+/**
+ * Exports
+ */
 Object.keys(fnMap).forEach(function(key) {
   module.exports[key] = fnMap[key];
 });
