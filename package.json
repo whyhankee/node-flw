@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha test/t_flw.js --reporter mocha-circleci-reporter",
     "tdd": "mocha -w test/t_flw.js",
-    "benchmark": "node ./test/b_flw.js"
+    "benchmark": "time node ./test/b_flw.js"
   },
   "homepage": "https://github.com/whyhankee/flw",
   "repository": {
