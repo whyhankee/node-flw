@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>flw browser test</title>
+  </head>
+  <body onload="runFlw()">
+    <h2>Flw browser compatibility test</h2>
+    <p>check console output for results</p>
+    <script src="../flw.js"></script>
+  </body>
+</html>
+
+<script>
+function runFlw() {
+  console.log('running flw');
+
+  flw.series([increaseCounter, increaseCounter], function (err, c) {
+    console.log('done', err ? err : c);
+  });
+}
+function increaseCounter(c, cb) {
+  if (c.counter === undefined) c.counter = 0;
+  c.counter += 1;
+  return cb();
+}
+</script>
