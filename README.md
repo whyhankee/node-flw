@@ -113,6 +113,11 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+v0.0.5
+
+* Complete browser support (see tests/browser.html)
+* Added tests for context separation
+
 v0.0.4
 
 * Browser support (setTimeout, slow!!)
