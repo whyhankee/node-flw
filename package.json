@@ -20,7 +20,8 @@
     "expect.js": "0.3.1",
     "fastbench": "1.0.0",
     "mocha": "2.4.5",
-    "mocha-circleci-reporter": "0.0.1"
+    "mocha-circleci-reporter": "0.0.1",
+    "neo-async": "1.7.4"
   },
   "author": "Paul Wijhenke <paul@paulsplace.nl>",
   "license": "MIT"

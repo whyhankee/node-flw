@@ -46,7 +46,7 @@ fnMap.parallel = function parallel(fns, context, done) {
   var numDone = 0;
   var doneCalled = false;
 
-  debug("parallel done function: "+ done.name || '<anonymous>');
+  debug("parallel done function", done.name || '<anonymous>');
   fns.forEach(function (fn) {
     debug("parallel call", fn.name);
     _callfn(fn, context, onParallelCallDone);
@@ -90,6 +90,7 @@ function make() {
         if (typeof done !== 'function') {
           throw new Error('_make - done !== function');
         }
+        debug('making function', fn.name);
         return fn(fns, context, done);
       };
     };

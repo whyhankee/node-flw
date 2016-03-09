@@ -1,10 +1,15 @@
 // jshint mocha: true
 'use strict';
+var async = require('neo-async');
 var expect = require('expect.js');
 var debug = require('debug')('flw:test');
 
 var fc = require('../flw');
 
+
+/**
+ * Start tests
+ */
 
 describe('basic operations', function () {
 
@@ -64,39 +69,43 @@ describe('basic operations', function () {
     }
   });
 
-  it('stores result from cb', function (done) {
-    var userData = {id: 12345, 'name': 'username'};
-
-    fc.series([storeUser], function (err, c) {
-      expect(err).to.be(null);
-      expect(c.user).to.eql(userData);
-      return done();
+  it('separates contexts between independent runs (this safe)', function (done) {
+    var batchHandlers = [pre_a, pre_b];
+    var batch = {};
+    batchHandlers.forEach(function (bh) {
+      var handlers = [];
+      for (var n=0; n<50; n++) {
+        handlers.push(deferHandler(bh));
+      }
+      debug('calling fc.make.parallel on '+bh.name);
+      batch[bh.name] = fc.make.parallel(handlers);
     });
 
-    function storeUser(context, cb) {
-      // simulate a user.save() like method,
-      //  passing c.store() as the cb (with the actual cb)
-      saveSomething(context._flw_store('user', cb));
-    }
-    function saveSomething(cb) {
-      setImmediate(function (_cb, userData) {
-        return _cb(null, userData);
-      }, cb, userData);
-    }
+    // test with async
+    //  if we would run with flow it would combine the contexts
+    debug('starting async');
+    return async.parallel(batch, function (err, results) {
+      expect(err).to.be(undefined);
+      expect(results).to.only.have.keys(['pre_a', 'pre_b']);
+      expect(results.pre_a).to.only.have.keys(['_flw_store', 'pre_a']);
+      expect(results.pre_b).to.only.have.keys(['_flw_store', 'pre_b']);
+      return done(err);
+    });
   });
 });
 
 
-
 function pre_a(context, cb) {
+  debug('in pre_a');
   context.pre_a = 'pre_a';
-  debug('pre_a', context);
+  // debug('pre_a', context);
   return cb();
 }
 
 function pre_b(context, cb) {
+  debug('in pre_b');
   context.pre_b = 'pre_b';
-  debug('pre_b', context);
+  // debug('pre_b', context);
   return cb();
 }
 
@@ -106,7 +115,7 @@ function work_a(context, cb) {
   expect(context.post_a).to.be(undefined);
   expect(context.post_b).to.be(undefined);
   context.work_a = 'work_a';
-  debug('work_a', context);
+  // debug('work_a', context);
   return cb();
 }
 
@@ -116,7 +125,7 @@ function work_b(context, cb) {
   expect(context.post_a).to.be(undefined);
   expect(context.post_b).to.be(undefined);
   context.work_b = 'work_b';
-  debug('work_b', context);
+  // debug('work_b', context);
   return cb();
 }
 
@@ -126,7 +135,7 @@ function post_a(context, cb) {
   expect(context.work_a).to.be('work_a');
   expect(context.work_b).to.be('work_b');
   context.post_a = 'post_a';
-  debug('post_a', context);
+  // debug('post_a', context);
   return cb();
 }
 
@@ -136,6 +145,22 @@ function post_b(context, cb) {
   expect(context.work_a).to.be('work_a');
   expect(context.work_b).to.be('work_b');
   context.post_b = 'post_b';
-  debug('post_b', context);
+  // debug('post_b', context);
   return cb();
+}
+
+
+/**
+ * Returns a deferred handler call (to enforce randomness)
+ *
+ * @private
+ */
+
+function deferHandler(handler) {
+  var df = function deferredHandler(context, callback) {
+    var timeoutMs = Math.round(Math.random() * 20);
+    debug('calling deferredHandler '+handler.name, {timeout: timeoutMs});
+    setTimeout(handler, timeoutMs, context, callback);
+  };
+  return df;
 }
