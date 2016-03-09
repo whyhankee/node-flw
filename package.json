@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test/t_flw.js --reporter mocha-circleci-reporter",
     "tdd": "mocha -w test/t_flw.js",
-    "benchmark": "time node ./test/b_flw.js"
+    "benchmark": "time node ./test/b_flw.js",
+    "build": "uglifyjs flw.js -c \"evaluate=false\" -m --source-map dist/flw-min.map -o dist/flw-min.js"
   },
   "homepage": "https://github.com/whyhankee/flw",
   "repository": {
@@ -18,10 +19,11 @@
   },
   "devDependencies": {
     "expect.js": "0.3.1",
-    "fastbench": "1.0.0",
+    "fastbench": "1.0.1",
     "mocha": "2.4.5",
     "mocha-circleci-reporter": "0.0.1",
-    "neo-async": "1.7.4"
+    "neo-async": "1.7.4",
+    "uglify-js": "2.6.2"
   },
   "author": "Paul Wijhenke <paul@paulsplace.nl>",
   "license": "MIT"
