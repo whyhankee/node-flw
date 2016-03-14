@@ -33,7 +33,7 @@
       callFn(fns[fnIterator], context, onSeriesCallDone);
     }
     function onSeriesCallDone(err) {
-      if (err) return done(err);
+      if (err) return done(err, context);
 
       if (++fnIterator >= num) return done(null, context);
       return callFunction();
@@ -67,8 +67,7 @@
       if (doneCalled) throw new Error('done already called');
 
       doneCalled = true;
-      if (err) return done(err);
-      return done(null, context);
+      return done(err || null, context);
     }
   };
 
