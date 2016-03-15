@@ -20,8 +20,6 @@ Another flow control library, inspired by `async` and `bach`.
 
 * Be able to stop the flow.
 
-* Stop the endless `if (err) return cb(err);` madness if you just want to keep the first value of an async operation
-
 
 ## How
 
