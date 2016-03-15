@@ -111,7 +111,12 @@ Also, please don't forget to check this when you submit a PR
 
 * Being able to stop the flow without abusing the `err` mechanism.
 
+
 ## Changelog
+
+v0.0.6
+
+* Also pass context to final callback in an error situation
 
 v0.0.5
 
