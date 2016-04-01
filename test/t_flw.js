@@ -82,7 +82,7 @@ describe('basic operations', function () {
     });
   });
 
-  it('each()', function (done) {
+  it('.each()', function (done) {
     var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
     return fc.each(items, eachItemHandler, done);
