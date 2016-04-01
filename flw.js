@@ -20,8 +20,10 @@
   fnMap.series = function series(fns, context, done) {
     if (done === undefined && typeof context === 'function') {
       done = context;
-      context = _makeContext();
+      context = {};
     }
+    _checkContext(context);
+
     var fnIterator = 0;
     var num = fns.length;
 
@@ -47,8 +49,10 @@
   fnMap.parallel = function parallel(fns, context, done) {
     if (done === undefined && typeof context === 'function') {
       done = context;
-      context = _makeContext();
+      context = {};
     }
+    _checkContext(context);
+
     var num = fns.length;
     var numDone = 0;
     var doneCalled = false;
@@ -91,8 +95,10 @@
         return function flowFunction(context, done) {
           if (done === undefined && typeof context === 'function') {
             done = context;
-            context = _makeContext();
+            context = {};
           }
+          _checkContext(context);
+
           if (typeof done !== 'function') {
             throw new Error('_make - done !== function');
           }
@@ -117,10 +123,11 @@
    * Create a new Flw context when a flow is starting
    * @private
    */
-  function _makeContext() {
-    var c = {};
+  function _checkContext (c) {
+    // Already defined?
+    if (c._store) return;
 
-    c._flw_store = function _flw_store(key, cb) {
+    c._store = function _flw_store(key, cb) {
       var self = this;
 
       var fn = function (err, data) {
@@ -132,6 +139,7 @@
       };
       return fn;
     };
+    c._flw_store = c._store;
 
     return c;
   }
