@@ -81,7 +81,12 @@
       done = fn; fn = numParralel;
       numParralel = 3;
     }
-    numParralel = numParralel < 1 ? 1 : numParralel;
+
+    if (numParralel === 0) {
+      numParralel = 25;
+    } else if (numParralel < 1) {
+      numParralel = 1;
+    }
 
     var doing = 0;
     var numProcessing = 0;
@@ -104,7 +109,7 @@
       // Batch (or call next item)
       var someThingCalled = false;
       while (doing < numTotal && numProcessing < numParralel) {
-        debug('each() called ', doing);
+        debug('each() call ', fn.name || '<anonymous>', doing);
         setImmediate(fn, items[doing++], onDone);
         numProcessing++;
         someThingCalled = true;
