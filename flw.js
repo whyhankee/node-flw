@@ -133,12 +133,13 @@
       var fn = function (err, data) {
         if (err) return cb(err);
 
-        debug('_flw_store', key, data);
+        debug('_store', key, data);
         self[key] = data;
         return cb();
       };
       return fn;
     };
+    // compatibilty for a while
     c._flw_store = c._store;
 
     return c;
