@@ -69,6 +69,19 @@ describe('basic operations', function () {
     }
   });
 
+  it('.series (injected context)', function (done) {
+    var preSet = {
+      preset: 'preset'
+    };
+    fc.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('preset', 'preset');
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
+    });
+  });
+
   it('each()', function (done) {
     var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -96,8 +109,8 @@ describe('basic operations', function () {
     return async.parallel(batch, function (err, results) {
       expect(err).to.be(undefined);
       expect(results).to.only.have.keys(['pre_a', 'pre_b']);
-      expect(results.pre_a).to.only.have.keys(['_flw_store', 'pre_a']);
-      expect(results.pre_b).to.only.have.keys(['_flw_store', 'pre_b']);
+      expect(results.pre_a).to.only.have.keys(['_store', '_flw_store', 'pre_a']);
+      expect(results.pre_b).to.only.have.keys(['_store', '_flw_store', 'pre_b']);
       return done(err);
     });
   });

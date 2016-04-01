@@ -112,6 +112,17 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+v0.0.7
+
+* Support predefined (optional) context
+
+```
+var context = {
+    preset: 'something'
+};
+flw.series(fns, context, callback);
+```
+
 v0.0.6
 
 * Also pass context to final callback in an error situation
