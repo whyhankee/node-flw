@@ -110,7 +110,7 @@
       var someThingCalled = false;
       while (doing < numTotal && numProcessing < numParralel) {
         debug('each() call ', fn.name || '<anonymous>', doing);
-        setImmediate(fn, items[doing++], onDone);
+        callFn(fn, items[doing++], onDone);
         numProcessing++;
         someThingCalled = true;
       }
