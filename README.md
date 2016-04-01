@@ -94,6 +94,19 @@ flw.series([
 ], onDone);
 ```
 
+### .each
+
+Simple async Array processing.
+
+example:
+
+```
+var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+var numParallel = 5;
+flw.each(items, numParallel, doItem, callback);
+```
+
+
 ## Tests and development
 
 `npm run test` - for default tests
@@ -114,6 +127,7 @@ Also, please don't forget to check this when you submit a PR
 
 v0.0.7
 
+* new method `.each()`
 * Support predefined (optional) context
 
 ```
