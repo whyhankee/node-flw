@@ -69,7 +69,6 @@ describe('basic operations', function () {
     }
   });
 
-
   it('.series (injected context)', function (done) {
     var preSet = {
       preset: 'preset'
@@ -83,6 +82,14 @@ describe('basic operations', function () {
     });
   });
 
+  it('each()', function (done) {
+    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+    return fc.each(items, eachItemHandler, done);
+    function eachItemHandler(item, cb) {
+      return cb();
+    }
+  });
 
   it('separates contexts between independent runs (this safe)', function (done) {
     var batchHandlers = [pre_a, pre_b];

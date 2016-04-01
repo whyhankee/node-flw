@@ -59,7 +59,7 @@
 
     debug("parallel done function: "+ done.name || '<anonymous>');
     fns.forEach(function (fn) {
-      debug("parallel call", fn.name);
+      // debug("parallel call", fn.name);
       callFn(fn, context, onParallelCallDone);
     });
 
@@ -74,6 +74,61 @@
       return done(err || null, context);
     }
   };
+
+
+  function each(items, numParralel, fn, done) {
+    if (done === undefined) {
+      done = fn; fn = numParralel;
+      numParralel = 3;
+    }
+
+    if (numParralel === 0) {
+      numParralel = 25;
+    } else if (numParralel < 1) {
+      numParralel = 1;
+    }
+
+    var doing = 0;
+    var numProcessing = 0;
+    var numDone = 0;
+    var numTotal = items.length;
+
+    debug('each() start', {
+      numParralel: numParralel,
+      numTotal: numTotal
+    });
+    return nextItem();
+
+    function nextItem() {
+      // We check here in case of emtpty array!
+      if (numDone >= numTotal) {
+        debug('each() done');
+        return done(null);
+      }
+
+      // Batch (or call next item)
+      var someThingCalled = false;
+      while (doing < numTotal && numProcessing < numParralel) {
+        debug('each() call ', fn.name || '<anonymous>', doing);
+        setImmediate(fn, items[doing++], onDone);
+        numProcessing++;
+        someThingCalled = true;
+      }
+      if (someThingCalled) debug('each() batch done');
+      return;
+
+      function onDone(err) {
+        if (err) {
+          debug('each() exit with err', err);
+          return done(err);
+        }
+
+        numProcessing--;
+        numDone++;
+        return nextItem();
+      }
+    }
+  }
 
 
   /**
@@ -162,6 +217,7 @@
     flw[key] = fnMap[key];
   });
   flw.make = make();
+  flw.each = each;
 
   if( typeof exports !== 'undefined' ) {
     if( typeof module !== 'undefined' && module.exports ) {

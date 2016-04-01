@@ -54,7 +54,7 @@ flw.series([
 
 ## API
 
-### .series([fn, fn], done)
+### .series([fn, fn], [context], done)
 
 example:
 ```
@@ -62,7 +62,7 @@ flw.series([a, b, c], function onDone(err, results) {
   console.log(err, results;)
 });
 ```
-### .parallel([fn, fn], done)
+### .parallel([fn, fn], [context], done)
 
 example:
 ```
