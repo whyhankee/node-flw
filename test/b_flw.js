@@ -37,6 +37,14 @@ var run = bench([
     ], done);
   },
 
+  function each (done) {
+    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+    return flw.each(items, eachItemHandler, done);
+    function eachItemHandler(item, cb) {
+      return cb();
+    }
+  }
 ], 50000);
 
 
