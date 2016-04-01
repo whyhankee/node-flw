@@ -229,13 +229,4 @@
     root.flw = flw;
   }
 
-  // if( typeof exports !== 'undefined' ) {
-  //   if( typeof module !== 'undefined' && module.exports ) {
-  //     exports = module.exports = mymodule;
-  //   }
-  //   exports.mymodule = mymodule;
-  // }
-  // else {
-  //   root.flw = mymodule;
-  // }
 }).call(this);  // jshint ignore:line
