@@ -103,7 +103,7 @@ example:
 ```
 var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 var numParallel = 5;
-flw.each(items, numParallel, doItem, callback);
+flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
 
@@ -124,6 +124,14 @@ Also, please don't forget to check this when you submit a PR
 
 
 ## Changelog
+
+v0.0.9
+
+* `.each()` now returns the results
+
+v0.0.8
+
+* Browser bugfix
 
 v0.0.7
 

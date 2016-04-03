@@ -85,9 +85,16 @@ describe('basic operations', function () {
   it('.each()', function (done) {
     var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
-    return fc.each(items, eachItemHandler, done);
+    return fc.each(items, eachItemHandler, function (err, results) {
+      expect(err).to.be(null);
+      expect(results).to.contain('a');
+      expect(results).to.contain('f');
+      expect(results).have.length(items.length);
+
+      return done();
+    });
     function eachItemHandler(item, cb) {
-      return cb();
+      return cb(null, item);
     }
   });
 

@@ -79,7 +79,7 @@
   function each(items, numParralel, fn, done) {
     if (done === undefined) {
       done = fn; fn = numParralel;
-      numParralel = 3;
+      numParralel = 5;
     }
 
     if (numParralel === 0) {
@@ -92,6 +92,7 @@
     var numProcessing = 0;
     var numDone = 0;
     var numTotal = items.length;
+    var results = [];
 
     debug('each() start', {
       numParralel: numParralel,
@@ -103,7 +104,7 @@
       // We check here in case of emtpty array!
       if (numDone >= numTotal) {
         debug('each() done');
-        return done(null);
+        return done(null, results);
       }
 
       // Batch (or call next item)
@@ -117,12 +118,13 @@
       if (someThingCalled) debug('each() batch done');
       return;
 
-      function onDone(err) {
+      function onDone(err, result) {
         if (err) {
           debug('each() exit with err', err);
           return done(err);
         }
 
+        results.push(result);
         numProcessing--;
         numDone++;
         return nextItem();
