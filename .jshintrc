@@ -1,7 +1,7 @@
 {
   "globals": {
   },
-  "esnext": false,
+  "esversion": 6,
   "node": true,
   "unused": true,
   "undef": true,
