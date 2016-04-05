@@ -59,7 +59,7 @@
 
     debug("parallel done function: "+ done.name || '<anonymous>');
     fns.forEach(function (fn) {
-      // debug("parallel call", fn.name);
+      debug("parallel call", fn.name);
       callFn(fn, context, onParallelCallDone);
     });
 
@@ -79,14 +79,10 @@
   function each(items, numParralel, fn, done) {
     if (done === undefined) {
       done = fn; fn = numParralel;
-      numParralel = 5;
+      numParralel = 3;
     }
 
-    if (numParralel === 0) {
-      numParralel = 25;
-    } else if (numParralel < 1) {
-      numParralel = 1;
-    }
+    if (numParralel <= 0) numParralel = 1;
 
     var doing = 0;
     var numProcessing = 0;
@@ -101,7 +97,7 @@
     return nextItem();
 
     function nextItem() {
-      // We check here in case of emtpty array!
+      // We done-check first in case of emtpty array
       if (numDone >= numTotal) {
         debug('each() done');
         return done(null, results);
@@ -110,7 +106,7 @@
       // Batch (or call next item)
       var someThingCalled = false;
       while (doing < numTotal && numProcessing < numParralel) {
-        debug('each() call ', fn.name || '<anonymous>', doing);
+        debug(`each() call ${doing} `, fn.name || '<anonymous>', items[doing]);
         callFn(fn, items[doing++], onDone);
         numProcessing++;
         someThingCalled = true;
@@ -118,6 +114,7 @@
       if (someThingCalled) debug('each() batch done');
       return;
 
+      // All done
       function onDone(err, result) {
         if (err) {
           debug('each() exit with err', err);

@@ -18,7 +18,9 @@ Another flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Be able to stop the flow.
+* Inspect the flow during development `DEBUG=flw npm start (or whatever)`
+
+* Be able to stop the flow (todo)
 
 
 ## How
@@ -98,11 +100,15 @@ flw.series([
 
 Simple async Array processing.
 
+`.each(items, [numParallel=3], fn, callback)`
+
+*Note: When runnen `each()` in parallel your items could be returned out of order. If the order is really important use `numParallel=0`.*
+
 example:
 
 ```
 var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-var numParallel = 5;
+var numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
