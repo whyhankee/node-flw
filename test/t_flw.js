@@ -1,4 +1,4 @@
-// jshint mocha: true
+/* eslint-env mocha */
 'use strict';
 var async = require('neo-async');
 var expect = require('expect.js');
@@ -13,7 +13,7 @@ var fc = require('../flw');
 
 describe('basic operations', function () {
 
-  it('.series', function (done) {
+  it('.series()', function (done) {
     fc.series([pre_a, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -22,7 +22,7 @@ describe('basic operations', function () {
     });
   });
 
-  it('.make.series', function (done) {
+  it('.make.series()', function (done) {
     var fn = fc.make.series([pre_a, pre_b]);
     fn(function onMakeSeriesDone(err, context) {
       expect(err).to.be(null);
@@ -32,7 +32,7 @@ describe('basic operations', function () {
     });
   });
 
-  it('.parallel', function (done) {
+  it('.parallel()', function (done) {
     fc.parallel([pre_a, pre_b], function onParallelDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -41,7 +41,7 @@ describe('basic operations', function () {
     });
   });
 
-  it('.make.parallel', function (done) {
+  it('.make.parallel()', function (done) {
     var fn = fc.make.parallel([pre_a, pre_b]);
     fn(function onMakeParallelDone(err, context) {
       expect(err).to.be(null);
@@ -69,7 +69,7 @@ describe('basic operations', function () {
     }
   });
 
-  it('.series (injected context)', function (done) {
+  it('.series() with injected context', function (done) {
     var preSet = {
       preset: 'preset'
     };

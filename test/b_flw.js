@@ -1,4 +1,4 @@
-"use strict;";
+'use strict';
 var bench = require('fastbench');
 var flw = require('../flw');
 

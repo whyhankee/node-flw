@@ -27,11 +27,11 @@
     var fnIterator = 0;
     var num = fns.length;
 
-    debug("parallel done function", done.name || '<anonymous>');
+    debug('parallel done function', done.name || '<anonymous>');
     return callFunction();
 
     function callFunction() {
-      debug("series call", fns[fnIterator].name);
+      debug('series call', fns[fnIterator].name);
       callFn(fns[fnIterator], context, onSeriesCallDone);
     }
     function onSeriesCallDone(err) {
@@ -57,9 +57,9 @@
     var numDone = 0;
     var doneCalled = false;
 
-    debug("parallel done function: "+ done.name || '<anonymous>');
+    debug('parallel done function: '+ done.name || '<anonymous>');
     fns.forEach(function (fn) {
-      debug("parallel call", fn.name);
+      debug('parallel call', fn.name);
       callFn(fn, context, onParallelCallDone);
     });
 
