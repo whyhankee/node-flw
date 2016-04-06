@@ -106,7 +106,7 @@
       // Batch (or call next item)
       var someThingCalled = false;
       while (doing < numTotal && numProcessing < numParralel) {
-        debug(`each() call ${doing} `, fn.name || '<anonymous>', items[doing]);
+        debug('each() call ' +doing+ ' '+ fn.name || '<anonymous>', items[doing]);
         callFn(fn, items[doing++], onDone);
         numProcessing++;
         someThingCalled = true;
