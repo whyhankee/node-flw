@@ -97,13 +97,11 @@ flw.series([
 ], onDone);
 ```
 
-### .each
+### .each(items, [numParallel], fn, calback)
 
 Simple async Array processing.
 
-`.each(items, [numParallel=3], fn, callback)`
-
-*Note: When runnen `each()` in parallel your items could be returned out of order. If the order is really important use `numParallel=0`.*
+*Note: When running `each()` in parallel your items could be returned out of order. If the order is really important use `numParallel=0`.*
 
 example:
 
