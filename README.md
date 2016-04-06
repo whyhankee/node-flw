@@ -2,7 +2,7 @@
 
 Another flow control library, inspired by `async` and `bach`.
 
-[![Circle CI](https://circleci.com/gh/whyhankee/flw.svg?style=svg)](https://circleci.com/gh/whyhankee/flw)
+[![Travis-CI](https://travis-ci.org/whyhankee/flw.svg)](https://travis-ci.org/whyhankee/flw)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/whyhankee/flw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
@@ -130,6 +130,11 @@ Also, please don't forget to check this when you submit a PR
 
 
 ## Changelog
+
+v0.0.10 (next)
+
+* Switched from CircleCI to TravisCI
+* Update documentation for `.each()`
 
 v0.0.9
 
