@@ -97,7 +97,7 @@ flw.series([
 ], onDone);
 ```
 
-### .each(items, [numParallel], fn, calback)
+### .each(items, [numParallel], fn, callback)
 
 Simple async Array processing.
 
