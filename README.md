@@ -1,6 +1,6 @@
 ## flw
 
-Another flow control library, inspired by `async` and `bach`.
+Another callback flow control library, inspired by `async` and `bach`.
 
 [![Travis-CI](https://travis-ci.org/whyhankee/flw.svg)](https://travis-ci.org/whyhankee/flw)
 [![David](https://david-dm.org/whyhankee/flw.svg)](https://david-dm.org)
@@ -9,7 +9,7 @@ Another flow control library, inspired by `async` and `bach`.
 
 ## What / Why
 
-`async` is the defacto standard for async flow control. I do have some issues here that I would like to improve:
+`async` is the defacto standard for callback flow control. I do have some issues here that I would like to improve:
 
 * I'm always struggling with combinations of `auto`, `series`, `parallel`, `waterfall` and keeping references to the results from the called functions. It seems to boil down to either:
 
@@ -19,14 +19,16 @@ Another flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Inspect the flow during development `DEBUG=flw npm start (or whatever)`
-
 * Be able to stop the flow (todo)
 
 
-## How
+## How (The context)
 
-The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. No need to return anything other than errors.
+The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. The context is used to store and retrieve data during the flow.
+
+It has some methods to work with the flow:
+* `_store()` - store the result of an async operation on the context and call the callback
+* `_clean()` cleans the `flw` related data from the context.
 
 An example handler looks like this:
 ```
@@ -34,21 +36,23 @@ function createUser(context, cb) {
   // add randomValue to the context;
   context.randomValue = 'notSoRandom';
 
-  var user = new AppUser(userProps);
-  return user.save(context._flw_store('user', cb));
+  var user = new User(userProps);
+  return user.save(context._store('user', cb));
 }
 ```
+_note: the _store() method stores the result of the operation in the context as 'user_
+
 
 A flow could be called with:
 ```
 flw.series([
-  flw.make.parallel([createUser, pre_b]),
-  flw.make.series([work_a, work_b]),
-  flw.make.parallel([post_a, post_b])
+  flw.make.parallel([createUser, createSomethingElse]),
+  flw.make.series([doSomething, doSomethingMore]),
 ], function (err, context) {
   ....
 });
 ```
+_note: context is always passed to the final callback (also in case of an error)_
 
 
 ## Installation
@@ -61,16 +65,17 @@ flw.series([
 
 example:
 ```
-flw.series([a, b, c], function onDone(err, results) {
-  console.log(err, results;)
+flw.series([a, b, c], function (err, context) {
+  console.log(err, context;)
 });
 ```
+
 ### .parallel([fn, fn], [context], done)
 
 example:
 ```
-flw.parallel([a, b, c], function onDone(err, results) {
-  console.log(err, results;)
+flw.parallel([a, b, c], function (err, context) {
+  console.log(err, context;)
 });
 ```
 
@@ -83,8 +88,8 @@ functions or having to `bind` them.
 example:
 ```
 var ourSeries = flw.make.series([a, b, c]);
-ourSeries(function onDone(err, results) {
-  console.log(err, results;)
+ourSeries(function (err, context) {
+  console.log(err, context;)
 });
 ```
 
@@ -132,6 +137,7 @@ Also, please don't forget to check this when you submit a PR
 
 v0.0.10 (next)
 
+* Implement context.\_clean()
 * Switched from CircleCI to TravisCI
 * Update documentation for `.each()`
 

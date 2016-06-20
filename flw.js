@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-  var root = this;                      // jshint ignore:line
+  var root = this;
 
   // Globals
   var fnMap = {};
@@ -193,6 +193,16 @@
       };
       return fn;
     };
+
+    c._clean = function _flw_clean() {
+      delete this._store;
+      delete this._flw_store;
+      delete this._clean;
+      delete this._stop;
+      delete this._stopped;
+      return this;
+    };
+
     // compatibilty for a while
     c._flw_store = c._store;
 
@@ -207,6 +217,7 @@
   function _debugBrowser() {
     // console.log(arguments);
   }
+
 
   /**
    * Export
@@ -227,5 +238,4 @@
   else {
     root.flw = flw;
   }
-
-}).call(this);  // jshint ignore:line
+}).call(this);
