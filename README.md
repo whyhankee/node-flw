@@ -19,7 +19,7 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Be able to stop the flow (todo)
+* Be able to stop the flow
 
 
 ## How (The context)
@@ -135,7 +135,12 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.10 (next)
+v0.0.11
+
+* .series() support for `context._stop(reason, cb);`
+* Update dependencies
+
+v0.0.10
 
 * Implement context.\_clean()
 * Switched from CircleCI to TravisCI

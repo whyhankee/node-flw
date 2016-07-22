@@ -27,6 +27,15 @@ describe('Basic operations', function () {
     });
   });
 
+  it('.series() with _stop', function (done) {
+    fc.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).not.to.have.property('pre_b');
+      return done();
+    });
+  });
+
   it('.parallel()', function (done) {
     fc.parallel([pre_a, pre_b], function onParallelDone(err, context) {
       expect(err).to.be(null);
@@ -80,6 +89,8 @@ describe('Context handling', function () {
     fc.series([dummyHandler], function (err, context) {
       expect(err).to.be(null);
       expect(context).to.only.have.keys([
+        '_stopped',
+        '_stop',
         '_store', '_flw_store',
         '_clean'
       ]);
@@ -151,7 +162,7 @@ describe('Context separation', function () {
     //  if we would run with flow it would combine the contexts
     debug('starting async');
     return async.parallel(batch, function (err, results) {
-      expect(err).to.be(undefined);
+      expect(err).to.be(null);
       expect(results).to.only.have.keys(['pre_a', 'pre_b']);
       expect(results.pre_a._clean()).to.only.have.keys(['pre_a']);
       expect(results.pre_b._clean()).to.only.have.keys(['pre_b']);
@@ -191,6 +202,10 @@ function work_a(context, cb) {
   context.work_a = 'work_a';
   // debug('work_a', context);
   return cb();
+}
+
+function test_stop(context, cb) {
+  context._stop('flw stopped ..', cb);
 }
 
 function work_b(context, cb) {

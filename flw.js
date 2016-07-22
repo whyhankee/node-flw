@@ -31,6 +31,10 @@
     return callFunction();
 
     function callFunction() {
+      if (context._stopped) {
+        debug('_stopped series call', fns[fnIterator].name);
+        return onSeriesCallDone(null, null);
+      }
       debug('series call', fns[fnIterator].name);
       callFn(fns[fnIterator], context, onSeriesCallDone);
     }
@@ -181,6 +185,17 @@
     // Already defined?
     if (c._store) return;
 
+    c._stopped = null;
+
+    // Indicate that we gracefully stop
+    //  if set, stops the flow until we are back to the main callback
+    c._stop = function _flw_stop(reason, cb) {
+      c._stopped = reason;
+      return cb();
+    };
+
+    // Stores the data returned from the callback in the context with key 'key'
+    //    then calls the callback
     c._store = function _flw_store(key, cb) {
       var self = this;
 
