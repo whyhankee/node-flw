@@ -67,41 +67,36 @@ flw.series([checkArgs, createUser, sendCreateEvent], function (err, context) {
 
 });
 
-function checkArgs(context, cb) {
+function checkArgs(c, cb) {
   validationlib.checkArgs(argTemplate, args, function (err, validatedArgs) {
-    // since there was no system error, we use the stop() mechanism here
+    // since we expect no system error, we use the stop() mechanism here
     if (err) {
-      return context._stop({
+      return c._stop({
         type: 'userError',
-        Message: invalid arguments',
+        Message: err.toString(),
         data: {
           args: args
         }
       }, cb);
     }
 
-    context.validatedArgs = validatedArgs;
+    // Store the validatedArgs on the context
+    c.validatedArgs = validatedArgs;
     return cb();
   });
 }
 
-function createUser(context, cb) {
-  // Add property to the context;
-  context.randomValue = 'notSoRandom';
-
+function createUser(c, cb) {
   // Now create our user, and call save
-  var user = new User(userProps);
-  return user.save(context._store('user', cb));
+  var user = new User(c.validatedArgs.userProps);
+  return user.save(c._store('user', cb));
 }
 
-function sendCreateEvent(context, cb) {
+function sendCreateEvent(c, cb) {
   queue.publish({
     queue: 'app.user.created',
-    id: context.user.id,
-    payload: {
-      randomValue: context.randomValue
-    }
-  }, context._store('event', cb));
+    id: c.user.id
+  }, c._store('event', cb));
 }
 ```
 
