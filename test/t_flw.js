@@ -27,15 +27,6 @@ describe('Basic operations', function () {
     });
   });
 
-  it('.series() with _stop', function (done) {
-    fc.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).not.to.have.property('pre_b');
-      return done();
-    });
-  });
-
   it('.parallel()', function (done) {
     fc.parallel([pre_a, pre_b], function onParallelDone(err, context) {
       expect(err).to.be(null);
@@ -120,6 +111,18 @@ describe('Context handling', function () {
       return done();
     });
   });
+
+  it('_stop()', function (done) {
+    fc.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context._stopped).to.be('flw stopped ..');
+
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).not.to.have.property('pre_b');
+      return done();
+    });
+  });
+
 });
 
 
