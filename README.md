@@ -19,7 +19,7 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Be able to stop the flow
+* Be able to stop the flow, keeping the err mechanism for system-errors. Only useful in a .series()
 
 
 ## How (The context)
