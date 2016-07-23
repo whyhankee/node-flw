@@ -24,35 +24,86 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 ## How (The context)
 
-The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. The context is used to store and retrieve data during the flow.
+The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. The context is passed to the final callback.
 
-It has some methods to work with the flow:
-* `_store()` - store the result of an async operation on the context and call the callback
-* `_clean()` cleans the `flw` related data from the context.
+The context is an object with some methods to help interact with the flow:
 
-An example handler looks like this:
+* `_store('key', cb)`
+  Store the result of an async operation on the context and call the callback
+
+* `_stop(reason, cb)`
+  Stop's the flow in a .series() call and stores reason in context._stopped)
+
+* `_clean()`
+  Cleans the `flw` related data from the context.
+
+
+_note: context is always passed to the final callback (also in case of an error)_
+
+
+### Example code
+
 ```
+var flw = require('flw');
+
+var args = {
+  userProps= {
+    username: 'someUsername',
+    etc: { }
+  }
+};
+
+
+flw.series([checkArgs, createUser, sendCreateEvent], function (err, context) {
+  console.log('Done', err, context;)
+
+  context = {
+    _stopped: {error object},
+    validatedArgs: {the validatedArgs},
+    randomValue = 'notSoRandom',
+    user: {the created user},
+    event: {the published event}
+  }
+
+});
+
+function checkArgs(context, cb) {
+  validationlib.checkArgs(argTemplate, args, function (err, validatedArgs) {
+    // since there was no system error, we use the stop() mechanism here
+    if (err) {
+      return context._stop({
+        type: 'userError',
+        Message: invalid arguments',
+        data: {
+          args: args
+        }
+      }, cb);
+    }
+
+    context.validatedArgs = validatedArgs;
+    return cb();
+  });
+}
+
 function createUser(context, cb) {
-  // add randomValue to the context;
+  // Add property to the context;
   context.randomValue = 'notSoRandom';
 
+  // Now create our user, and call save
   var user = new User(userProps);
   return user.save(context._store('user', cb));
 }
-```
-_note: the _store() method stores the result of the operation in the context as 'user_
 
-
-A flow could be called with:
+function sendCreateEvent(context, cb) {
+  queue.publish({
+    queue: 'app.user.created',
+    id: context.user.id,
+    payload: {
+      randomValue: context.randomValue
+    }
+  }, context._store('event', cb));
+}
 ```
-flw.series([
-  flw.make.parallel([createUser, createSomethingElse]),
-  flw.make.series([doSomething, doSomethingMore]),
-], function (err, context) {
-  ....
-});
-```
-_note: context is always passed to the final callback (also in case of an error)_
 
 
 ## Installation
@@ -134,6 +185,11 @@ Also, please don't forget to check this when you submit a PR
 
 
 ## Changelog
+
+v0.0.13 (todo)
+
+* update README documentation
+*
 
 v0.0.12
 
