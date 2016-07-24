@@ -174,11 +174,6 @@ Also, please don't forget to check this when you submit a PR
 `npm run benchmark`
 
 
-## Todo
-
-* Being able to stop the flow without abusing the `err` mechanism.
-
-
 ## Changelog
 
 v0.0.13 (todo)
