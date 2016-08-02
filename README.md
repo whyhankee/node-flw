@@ -178,8 +178,8 @@ Also, please don't forget to check this when you submit a PR
 
 v0.0.13 (todo)
 
-* update README documentation
-
+* Update README documentation
+* Fix: context._clean() now returns a copy of the object
 
 v0.0.12
 

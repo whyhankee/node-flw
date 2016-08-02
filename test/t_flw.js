@@ -107,7 +107,11 @@ describe('Context handling', function () {
   it('_clean()', function (done) {
     fc.series([pre_a], function (err, context) {
       expect(err).to.be(null);
+
+      // clean returns a new object
       expect(context._clean()).to.only.have.key('pre_a');
+      // context object still has the special properties
+      expect(context._clean).to.be.a('function');
       return done();
     });
   });

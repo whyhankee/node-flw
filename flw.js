@@ -8,6 +8,14 @@
   var debug = _debugBrowser;
   var callFn = _callSetTimeout;
 
+  var ourContextKeys = [
+    '_stopped',
+    '_stop',
+    '_store',
+    '_clean',
+    '_flw_store'
+  ];
+
   // in NodeJS ?
   if (typeof require === 'function') {
     debug = require('debug')('flw');
@@ -210,12 +218,13 @@
     };
 
     c._clean = function _flw_clean() {
-      delete this._store;
-      delete this._flw_store;
-      delete this._clean;
-      delete this._stop;
-      delete this._stopped;
-      return this;
+      var self = this;
+      var contextCopy = {};
+      Object.keys(this).forEach(function (k) {
+        if (ourContextKeys.indexOf(k) !== -1) return;
+        contextCopy[k] = self[k];
+      });
+      return contextCopy;
     };
 
     // compatibilty for a while
