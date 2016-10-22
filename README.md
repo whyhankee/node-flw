@@ -182,7 +182,7 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.13 (next version)
+v0.0.13
 
 * Updated dependencies
 * Implement .wrap()
