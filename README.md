@@ -34,7 +34,6 @@ The context is an object with some methods to help interact with the flow:
 
 * `_stop(reason, cb)`
 
-
    Stop's the flow in a .series() call and stores reason in context._stopped)
 
 * `_clean()`
@@ -185,6 +184,7 @@ Also, please don't forget to check this when you submit a PR
 
 v0.0.13 (next version)
 
+* Updated dependencies
 * Implement .wrap()
 * Update README documentation
 * Fix: context._clean() now returns a copy of the object
