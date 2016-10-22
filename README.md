@@ -29,13 +29,18 @@ The major change is that during the flow control a context object is passed to a
 The context is an object with some methods to help interact with the flow:
 
 * `_store('key', cb)`
+
   Store the result of an async operation on the context and call the callback
 
 * `_stop(reason, cb)`
-  Stop's the flow in a .series() call and stores reason in context._stopped)
+
+
+   Stop's the flow in a .series() call and stores reason in context._stopped)
 
 * `_clean()`
-  Cleans the `flw` related data from the context and returns the context
+
+
+ Cleans the `flw` related data from the context and returns the context
 
 
 _note: context is always passed to the final callback (also in case of an error)_
@@ -46,57 +51,32 @@ _note: context is always passed to the final callback (also in case of an error)
 ```
 var flw = require('flw');
 
-var args = {
-  userProps= {
-    username: 'someUsername',
-    etc: { }
-  }
-};
 
+function addUser(userProps, done) {
+  var context = {
+    newUserProps: userProps
+  };
 
-flw.series([checkArgs, createUser, sendCreateEvent], function (err, context) {
-  console.log('Done', err, context;)
+  flw.series([
+    createUser,
+    sendCreateEvent
+  ], context, function (err, context) {
+    if (err) return done(err);
 
-  context = {
-    _stopped: {error object},
-    validatedArgs: {the validatedArgs},
-    randomValue = 'notSoRandom',
-    user: {the created user},
-    event: {the published event}
-  }
-
-});
-
-function checkArgs(c, cb) {
-  validationlib.checkArgs(argTemplate, args, function (err, validatedArgs) {
-    // since we expect no system error, we use the stop() mechanism here
-    if (err) {
-      return c._stop({
-        type: 'userError',
-        Message: err.toString(),
-        data: {
-          args: args
-        }
-      }, cb);
-    }
-
-    // Store the validatedArgs on the context
-    c.validatedArgs = validatedArgs;
-    return cb();
+    return done(null, context.user);
   });
 }
 
-function createUser(c, cb) {
-  // Now create our user, and call save
-  var user = new User(c.validatedArgs.userProps);
+function _createUser(c, cb) {
+  var user = new User(c.userProps);
   return user.save(c._store('user', cb));
 }
 
-function sendCreateEvent(c, cb) {
+function _sendCreateEvent(c, cb) {
   queue.publish({
     queue: 'app.user.created',
     id: c.user.id
-  }, c._store('event', cb));
+  }, cb);
 }
 ```
 
@@ -109,14 +89,22 @@ function sendCreateEvent(c, cb) {
 
 ### .series([fn, fn], [context], done)
 
+Will call the functions in series, you can provide an initial context by passing a context object.
+
 example:
 ```
-flw.series([a, b, c], function (err, context) {
-  console.log(err, context;)
+var context = {
+  userid: userId
+};
+
+flw.series([a, b, c], context, function (err, context) {
+  console.log(err, context._clean();)
 });
 ```
 
 ### .parallel([fn, fn], [context], done)
+
+Will call the functions in parallel, you can provide an initial context by passing a context object.
 
 example:
 ```
@@ -195,7 +183,7 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.13 (todo)
+v0.0.13 (next version)
 
 * Implement .wrap()
 * Update README documentation
