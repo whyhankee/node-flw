@@ -163,9 +163,11 @@ flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
 
-### .wrap(fn, [arguments], [key])
+### .wrap(fn, [arguments], key)
 
 Wraps a regular async function (without context)
+  will call the function with the arguments (if provided)
+  will store results in context[key] (if provided)
 
 example:
 
@@ -195,6 +197,7 @@ Also, please don't forget to check this when you submit a PR
 
 v0.0.13 (todo)
 
+* Implement .wrap()
 * Update README documentation
 * Fix: context._clean() now returns a copy of the object
 
