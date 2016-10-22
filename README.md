@@ -57,8 +57,8 @@ function addUser(userProps, done) {
   };
 
   flw.series([
-    createUser,
-    sendCreateEvent
+    _createUser,
+    _sendCreateEvent
   ], context, function (err, context) {
     if (err) return done(err);
 
