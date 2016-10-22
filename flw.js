@@ -87,6 +87,29 @@
     }
   };
 
+  function wrap(wrapFn, args, key) {
+    var self = this;
+
+    if (key === undefined && typeof(args) === 'string') {
+      key = args;
+      args = [];
+    }
+    if (!args) args = [];
+
+    return function wrapper(context, cb) {
+      var copyArgs = args.slice(args);
+      copyArgs.unshift(self);
+      copyArgs.push(onWrappedDone);
+      return wrapFn.bind.apply(wrapFn, copyArgs)();
+
+      function onWrappedDone(err, result) {
+        if (err) return cb(err);
+
+        if (key) context[key] = result;
+        return cb(err);
+      }
+    };
+  }
 
   function each(items, numParralel, fn, done) {
     if (done === undefined) {
@@ -250,6 +273,7 @@
   Object.keys(fnMap).forEach(function(key) {
     flw[key] = fnMap[key];
   });
+  flw.wrap = wrap;
   flw.make = make();
   flw.each = each;
 

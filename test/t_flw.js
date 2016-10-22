@@ -51,14 +51,45 @@ describe('Basic operations', function () {
 
     return fc.each(items, eachItemHandler, function (err, results) {
       expect(err).to.be(null);
-      expect(results).to.contain('a');
-      expect(results).to.contain('f');
+      expect(results).to.contain('aa');
+      expect(results).to.contain('ff');
       expect(results).have.length(items.length);
       return done();
     });
     function eachItemHandler(item, cb) {
-      return cb(null, item);
+      return cb(null, item+item);
     }
+  });
+
+  it('.wrap()', function (done) {
+    var expectedResult = 'expectedResult';
+
+    var obj = {
+      value: 42,
+
+      getValue : function getValue(expected, cb) {
+        if (cb === undefined && typeof(expected) === 'function') {
+          cb = expected;
+          expected = undefined;
+        }
+        if (expected) return cb(null, expected);
+
+        return cb(null, this.value);
+      }
+    };
+
+    fc.series([
+      fc.wrap(obj.getValue.bind(obj)),
+      fc.wrap(obj.getValue.bind(obj), 'default'),
+      fc.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
+    ], function onWrapHandlerDone(err, context) {
+      expect(err).to.be(null);
+      expect(context._clean()).to.eql({
+        default: 42,
+        expected: expectedResult
+      });
+      return done();
+    });
   });
 
   it('.series() with injected context', function (done) {
@@ -182,6 +213,7 @@ describe('Context separation', function () {
 /**
  * Specialised handlers that will check the state of the context
  */
+
 
 function dummyHandler(context, cb) {
   return cb();

@@ -35,7 +35,7 @@ The context is an object with some methods to help interact with the flow:
   Stop's the flow in a .series() call and stores reason in context._stopped)
 
 * `_clean()`
-  Cleans the `flw` related data from the context.
+  Cleans the `flw` related data from the context and returns the context
 
 
 _note: context is always passed to the final callback (also in case of an error)_
@@ -160,6 +160,23 @@ example:
 var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 var numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
+```
+
+
+### .wrap(fn, [arguments], [key])
+
+Wraps a regular async function (without context)
+
+example:
+
+```
+flw.series([
+  flw.wrap(fs.readFile, ['/etc/hostfile', 'utf8'], hostfile),
+], function (err, context) {
+  if (err) throw err;
+
+  console.log(context.hostFile);
+}
 ```
 
 
