@@ -182,6 +182,10 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+v0.0.15
+
+* Allow context._stop(cb)  (without reason)
+
 v0.0.14
 
 * Fix ESlint dependency for older node version

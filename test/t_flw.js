@@ -151,8 +151,16 @@ describe('Context handling', function () {
     fc.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context._stopped).to.be('flw stopped ..');
-
       expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).not.to.have.property('pre_b');
+      return done();
+    });
+  });
+
+  it('_stop() without reason', function (done) {
+    fc.series([pre_a, test_stop_noReason, pre_b], function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context._stopped).to.be('stopped');
       expect(context).not.to.have.property('pre_b');
       return done();
     });
@@ -244,7 +252,11 @@ function work_a(context, cb) {
 }
 
 function test_stop(context, cb) {
-  context._stop('flw stopped ..', cb);
+  return context._stop('flw stopped ..', cb);
+}
+
+function test_stop_noReason(context, cb) {
+  return context._stop(cb);
 }
 
 function work_b(context, cb) {

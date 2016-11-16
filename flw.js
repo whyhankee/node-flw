@@ -221,6 +221,10 @@
     // Indicate that we gracefully stop
     //  if set, stops the flow until we are back to the main callback
     c._stop = function _flw_stop(reason, cb) {
+      if (!cb && typeof reason === 'function') {
+        cb = reason;
+        reason = 'stopped';
+      }
       c._stopped = reason;
       return cb();
     };
