@@ -4,12 +4,12 @@ var async = require('neo-async');
 var expect = require('expect.js');
 var debug = require('debug')('flw:test');
 
-var fc = require('../flw');
+var flw = require('../flw');
 
 
 describe('Basic operations', function () {
   it('.series()', function (done) {
-    fc.series([pre_a, pre_b], function onSeriesDone(err, context) {
+    flw.series([pre_a, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
       expect(context).to.have.property('pre_b', 'pre_b');
@@ -18,7 +18,7 @@ describe('Basic operations', function () {
   });
 
   it('.make.series()', function (done) {
-    var fn = fc.make.series([pre_a, pre_b]);
+    var fn = flw.make.series([pre_a, pre_b]);
     fn(function onMakeSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -28,7 +28,7 @@ describe('Basic operations', function () {
   });
 
   it('.parallel()', function (done) {
-    fc.parallel([pre_a, pre_b], function onParallelDone(err, context) {
+    flw.parallel([pre_a, pre_b], function onParallelDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
       expect(context).to.have.property('pre_b', 'pre_b');
@@ -37,7 +37,7 @@ describe('Basic operations', function () {
   });
 
   it('.make.parallel()', function (done) {
-    var fn = fc.make.parallel([pre_a, pre_b]);
+    var fn = flw.make.parallel([pre_a, pre_b]);
     fn(function onMakeParallelDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -49,7 +49,7 @@ describe('Basic operations', function () {
   it('.each()', function (done) {
     var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
-    return fc.each(items, eachItemHandler, function (err, results) {
+    return flw.each(items, eachItemHandler, function (err, results) {
       expect(err).to.be(null);
       expect(results).to.contain('aa');
       expect(results).to.contain('ff');
@@ -78,10 +78,10 @@ describe('Basic operations', function () {
       }
     };
 
-    fc.series([
-      fc.wrap(obj.getValue.bind(obj)),
-      fc.wrap(obj.getValue.bind(obj), 'default'),
-      fc.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
+    flw.series([
+      flw.wrap(obj.getValue.bind(obj)),
+      flw.wrap(obj.getValue.bind(obj), 'default'),
+      flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
     ], function onWrapHandlerDone(err, context) {
       expect(err).to.be(null);
       expect(context._clean()).to.eql({
@@ -95,7 +95,7 @@ describe('Basic operations', function () {
   it('.series() with injected context', function (done) {
     var preSet = {preset: 'preset'};
 
-    fc.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+    flw.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('preset', 'preset');
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -108,7 +108,7 @@ describe('Basic operations', function () {
 
 describe('Context handling', function () {
   it('correct context keys', function (done) {
-    fc.series([dummyHandler], function (err, context) {
+    flw.series([dummyHandler], function (err, context) {
       expect(err).to.be(null);
       expect(context).to.only.have.keys([
         '_stopped',
@@ -121,7 +121,7 @@ describe('Context handling', function () {
   });
 
   it('_store()', function (done) {
-    fc.series([testHandler], function (err, context) {
+    flw.series([testHandler], function (err, context) {
       expect(err).to.be(null);
       expect(context.value).to.be('returnValue');
       return done();
@@ -136,7 +136,7 @@ describe('Context handling', function () {
   });
 
   it('_clean()', function (done) {
-    fc.series([pre_a], function (err, context) {
+    flw.series([pre_a], function (err, context) {
       expect(err).to.be(null);
 
       // clean returns a new object
@@ -148,7 +148,7 @@ describe('Context handling', function () {
   });
 
   it('_stop()', function (done) {
-    fc.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
+    flw.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context._stopped).to.be('flw stopped ..');
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -158,23 +158,22 @@ describe('Context handling', function () {
   });
 
   it('_stop() without reason', function (done) {
-    fc.series([pre_a, test_stop_noReason, pre_b], function onSeriesDone(err, context) {
+    flw.series([pre_a, test_stop_noReason, pre_b], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context._stopped).to.be('stopped');
       expect(context).not.to.have.property('pre_b');
       return done();
     });
   });
-
 });
 
 
 describe('Complex flows', function () {
   it('combination flow', function (done) {
-    fc.series([
-      fc.make.parallel([pre_a, pre_b]),
-      fc.make.series([work_a, work_b]),
-      fc.make.parallel([post_a, post_b])
+    flw.series([
+      flw.make.parallel([pre_a, pre_b]),
+      flw.make.series([work_a, work_b]),
+      flw.make.parallel([post_a, post_b])
     ], onFlowDone);
     function onFlowDone(err, context) {
       expect(err).to.be(null);
@@ -200,8 +199,8 @@ describe('Context separation', function () {
       for (var n=0; n<50; n++) {
         handlers.push(deferHandler(bh));
       }
-      debug('calling fc.make.parallel on '+bh.name);
-      batch[bh.name] = fc.make.parallel(handlers);
+      debug('calling flw.make.parallel on '+bh.name);
+      batch[bh.name] = flw.make.parallel(handlers);
     });
 
     // test with async
