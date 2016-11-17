@@ -194,7 +194,7 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.15 (upcoming)
+v0.0.15
 
 * Allow context._stop(cb)  (without reason)
 * Updated dependencies
