@@ -13,69 +13,66 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 * I'm always struggling with combinations of `auto`, `series`, `parallel`, `waterfall` and keeping references to the results from the called functions. It seems to boil down to either:
 
-	* Assign the results to variables in an outer scope - yuck
-	* Dragging everything with you in a waterfall during the entire flow - yuck
-	* Use `async.auto`, close, however, the dependency map is easy to get wrong over time
+	* Assign the results to variables in an outer scope - yuck. This would also require you to use inline functions which gives long messy functions and a performance hit since the functions need to be created every-time the funcion gets called.
+
+	* Dragging everything with you in a waterfall during the entire flow - yuck. When you need to retain more than a few result variables this get messy real fast. It would also limit the beneficial use of parallel functions half-way.
+
+	* Use `async.auto` - Close, however, the dependency map is easy to get wrong over time.
+
+  * So, in `flw` every function gets called with a context object to store and retrieve data. The context object also has some helper methods.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Be able to stop the flow, keeping the err mechanism for system-errors. Only useful in a .series()
+* Be able to stop the flow, keeping the err mechanism for system-errors - Sometimes there is just no more work to be done. Only useful in a .series()
+
+* Auto-avoid 'callback on the same tick' stack-overflow issues, all functions will be called with setImmediate().
 
 
-## How (The context)
+*Note*
 
-The major change is that during the flow control a context object is passed to all called functions where they store their results or can retrieve results from other functions. The context is passed to the final callback.
-
-The context is an object with some methods to help interact with the flow:
-
-* `_store('key', cb)`
-
-  Store the result of an async operation on the context and call the callback
-
-* `_stop(reason, cb)`
-
-   Stop's the flow in a .series() call and stores reason in context._stopped)
-
-* `_clean()`
+  * The context is always passed to the final callback (also in case of an error)
 
 
- Cleans the `flw` related data from the context and returns the context
-
-
-_note: context is always passed to the final callback (also in case of an error)_
-
-
-### Example code
+### Example usage
 
 ```
 var flw = require('flw');
 
+var db = ...;
+var eventManager = ...;
 
-function addUser(userProps, done) {
-  var context = {
-    newUserProps: userProps
+
+function createUser(userProps, done) {
+  var context = {                               // Initial flw context
+    newUserProps: validateUserProps(userProps)
   };
 
-  flw.series([
+  var postCreateFn = flw.make.parallel([        // make a parallel flw function
+    _sendUserCreatedEvent
+    _somethingElse,
+  ]);
+
+  return flw.series([                           // Run in series
     _createUser,
-    _sendCreateEvent
+    postCreateFn,                               // These ones will be executed in parallel
   ], context, function (err, context) {
     if (err) return done(err);
 
-    return done(null, context.user);
+    return done(null, context.user);             // return the new user
   });
 }
 
-function _createUser(c, cb) {
-  var user = new User(c.userProps);
-  return user.save(c._store('user', cb));
+function _createUser(context, cb) {
+  var user = new db.User(c.userProps);
+  return user.save(context._store('user', cb));  // Create user in db, store in context
 }
 
-function _sendCreateEvent(c, cb) {
-  queue.publish({
+function _sendUserCreatedEvent(context, cb) {
+  var newEvent = {
     queue: 'app.user.created',
-    id: c.user.id
-  }, cb);
+    id: context.user.id                          // use the user.id from the context
+  };
+  return eventManager.publish(newEvent, cb);
 }
 ```
 
@@ -150,11 +147,11 @@ flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
 
-### .wrap(fn, [arguments], key)
+### .wrap(fn, [arguments], [key])
 
 Wraps a regular async function (without context)
   will call the function with the arguments (if provided)
-  will store results in context[key] (if provided)
+  will store results in context [key] (if provided)
 
 example:
 
@@ -167,6 +164,21 @@ flw.series([
   console.log(context.hostFile);
 }
 ```
+
+## context methods
+
+### ._store('key', cb)
+
+Store the result of an async operation on the context and call the callback
+
+### _stop(reason, cb)
+
+Stops the flow in a .series() call, stores `reason` in `context._stopped`.
+
+### _clean()
+
+Returns a copy of the context without the `flw`-related data
+
 
 
 ## Tests and development
@@ -182,9 +194,11 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.15
+v0.0.15 (upcoming)
 
 * Allow context._stop(cb)  (without reason)
+* Updated dependencies
+* Updates to the README
 
 v0.0.14
 
