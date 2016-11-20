@@ -14,9 +14,6 @@
     "type": "git",
     "url": "git@github.com:whyhankee/flw.git"
   },
-  "dependencies": {
-    "debug": "2.3.2"
-  },
   "devDependencies": {
     "eslint": "<2.8",
     "expect.js": "0.3.1",
