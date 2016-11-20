@@ -118,6 +118,10 @@ describe('Basic operations', function () {
         return done();
       });
     });
+
+    it('.series() - no functions', function (done) {
+      return flw.series([], done);
+    });
   });
 
   describe('.parallel', function () {
@@ -160,6 +164,10 @@ describe('Basic operations', function () {
         return done();
       });
     });
+
+    it('.parallel() - no functions', function (done) {
+      return flw.parallel([], done);
+    });
   });
 
   describe('.each', function () {
@@ -176,6 +184,14 @@ describe('Basic operations', function () {
       
       function eachItemHandler(item, cb) {
         return cb(null, item+item);
+      }
+    });
+
+    it('.each() - no items', function (done) {
+      return flw.each([], eachHandler, done);
+
+      function eachHandler(item, cb) {
+        return cb();
       }
     });
   });

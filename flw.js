@@ -30,8 +30,10 @@
     }
     _checkContext(context);
 
+    var numTodo = fns.length;
+    if (numTodo <= 0) return callFn(done, null, context);
+
     var fnIterator = 0;
-    var num = fns.length;
     return callFunction();
 
     function callFunction() {
@@ -43,7 +45,7 @@
     function onSeriesCallDone(err) {
       if (err) return done(err, context);
 
-      if (++fnIterator >= num) return done(null, context);
+      if (++fnIterator >= numTodo) return done(null, context);
       return callFunction();
     }
   };
@@ -59,7 +61,9 @@
     }
     _checkContext(context);
 
-    var num = fns.length;
+    var numTodo = fns.length;
+    if (numTodo <= 0) return callFn(done, null, context);
+
     var numDone = 0;
     var doneCalled = false;
 
@@ -69,7 +73,7 @@
 
     function onParallelCallDone(err) {
       if (err) return callDone(err);
-      if (++numDone === num) return callDone(err);
+      if (++numDone >= numTodo) return callDone(err);
     }
     function callDone(err) {
       if (doneCalled) throw new Error('done already called');
@@ -98,7 +102,7 @@
         if (err) return cb(err);
 
         if (key) context[key] = result;
-        return cb(err);
+        return cb(null);
       }
     };
   }
@@ -180,7 +184,7 @@
    * @private
    */
   function _callSetTimeout(fn, context, cb) {
-    setTimeout(fn, 0, context, cb);
+    return setTimeout(fn, 0, context, cb);
   }
 
 
@@ -189,7 +193,7 @@
    * @private
    */
   function _checkContext (c) {
-    // Already defined?
+    // Already done?
     if (c._store) return;
 
     c._stopped = null;
