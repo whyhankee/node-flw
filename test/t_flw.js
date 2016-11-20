@@ -8,7 +8,7 @@ var flw = require('../flw');
 
 describe('Context handling', function () {
   it('correct context keys', function (done) {
-    flw.series([dummyHandler], function (err, context) {
+    return flw.series([dummyHandler], function (err, context) {
       expect(err).to.be(null);
       expect(context).to.only.have.keys([
         '_stopped',
@@ -21,7 +21,7 @@ describe('Context handling', function () {
   });
 
   it('_store()', function (done) {
-    flw.series([testHandler], function (err, context) {
+    return flw.series([testHandler], function (err, context) {
       expect(err).to.be(null);
       expect(context.value).to.be('returnValue');
       return done();
@@ -35,20 +35,12 @@ describe('Context handling', function () {
     }
   });
 
-  it('_clean()', function (done) {
-    flw.series([pre_a], function (err, context) {
-      expect(err).to.be(null);
-
-      // clean returns a new object
-      expect(context._clean()).to.only.have.key('pre_a');
-      // context object still has the special properties
-      expect(context._clean).to.be.a('function');
-      return done();
-    });
-  });
-
   it('_stop()', function (done) {
-    flw.series([pre_a, test_stop, pre_b], function onSeriesDone(err, context) {
+    return flw.series([
+      pre_a,
+      test_stop,
+      pre_b
+    ], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context._stopped).to.be('flw stopped ..');
       expect(context).to.have.property('pre_a', 'pre_a');
@@ -58,10 +50,26 @@ describe('Context handling', function () {
   });
 
   it('_stop() without reason', function (done) {
-    flw.series([pre_a, test_stop_noReason, pre_b], function onSeriesDone(err, context) {
+    return flw.series([
+      pre_a,
+      test_stop_noReason,
+      pre_b
+    ], function onSeriesDone(err, context) {
       expect(err).to.be(null);
       expect(context._stopped).to.be('stopped');
       expect(context).not.to.have.property('pre_b');
+      return done();
+    });
+  });
+
+  it('_clean()', function (done) {
+    return flw.series([pre_a], function (err, context) {
+      expect(err).to.be(null);
+
+      // clean returns a new object
+      expect(context._clean()).to.only.have.key('pre_a');
+      // context object still has the special properties
+      expect(context._clean).to.be.a('function');
       return done();
     });
   });
@@ -72,7 +80,10 @@ describe('Basic operations', function () {
 
   describe('.series', function () {
     it('.series()', function (done) {
-      flw.series([pre_a, pre_b], function onSeriesDone(err, context) {
+      return flw.series([
+        pre_a,
+        pre_b
+      ], function onSeriesDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
@@ -81,8 +92,11 @@ describe('Basic operations', function () {
     });
 
     it('.make.series()', function (done) {
-      var fn = flw.make.series([pre_a, pre_b]);
-      fn(function onMakeSeriesDone(err, context) {
+      var fn = flw.make.series([
+        pre_a, 
+        pre_b
+      ]);
+      return fn(function onMakeSeriesDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
@@ -93,7 +107,10 @@ describe('Basic operations', function () {
     it('.series() with injected context', function (done) {
       var preSet = {preset: 'preset'};
 
-      flw.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+      return flw.series([
+        pre_a,
+        pre_b
+      ], preSet, function onSeriesDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('preset', 'preset');
         expect(context).to.have.property('pre_a', 'pre_a');
@@ -105,7 +122,10 @@ describe('Basic operations', function () {
 
   describe('.parallel', function () {
     it('.parallel()', function (done) {
-      flw.parallel([pre_a, pre_b], function onParallelDone(err, context) {
+      return flw.parallel([
+        pre_a,
+        pre_b
+      ], function onParallelDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
@@ -114,8 +134,11 @@ describe('Basic operations', function () {
     });
 
     it('.make.parallel()', function (done) {
-      var fn = flw.make.parallel([pre_a, pre_b]);
-      fn(function onMakeParallelDone(err, context) {
+      var fn = flw.make.parallel([
+        pre_a,
+        pre_b
+      ]);
+      return fn(function onMakeParallelDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
@@ -126,7 +149,10 @@ describe('Basic operations', function () {
     it('.parallel() with injected context', function (done) {
       var preSet = {preset: 'preset'};
 
-      flw.parallel([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+      return flw.parallel([
+        pre_a,
+        pre_b
+      ], preSet, function onSeriesDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('preset', 'preset');
         expect(context).to.have.property('pre_a', 'pre_a');
@@ -147,6 +173,7 @@ describe('Basic operations', function () {
         expect(results).have.length(items.length);
         return done();
       });
+      
       function eachItemHandler(item, cb) {
         return cb(null, item+item);
       }
@@ -171,7 +198,7 @@ describe('Basic operations', function () {
         }
       };
 
-      flw.series([
+      return flw.series([
         flw.wrap(obj.getValue.bind(obj)),
         flw.wrap(obj.getValue.bind(obj), 'default'),
         flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
@@ -190,12 +217,11 @@ describe('Basic operations', function () {
 
 describe('Combination flow', function () {
   it('combination flow', function (done) {
-    flw.series([
+    return flw.series([
       flw.make.parallel([pre_a, pre_b]),
       flw.make.series([work_a, work_b]),
       flw.make.parallel([post_a, post_b])
-    ], onFlowDone);
-    function onFlowDone(err, context) {
+    ], function onFlowDone(err, context) {
       expect(err).to.be(null);
       expect(context).to.have.property('pre_a', 'pre_a');
       expect(context).to.have.property('pre_b', 'pre_b');
@@ -204,7 +230,7 @@ describe('Combination flow', function () {
       expect(context).to.have.property('post_a', 'post_a');
       expect(context).to.have.property('post_b', 'post_b');
       return done();
-    }
+    });
   });
 });
 
