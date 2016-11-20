@@ -1,109 +1,9 @@
 /* eslint-env mocha */
 'use strict';
-var async = require('neo-async');
 var expect = require('expect.js');
 var debug = require('debug')('flw:test');
 
 var flw = require('../flw');
-
-
-describe('Basic operations', function () {
-  it('.series()', function (done) {
-    flw.series([pre_a, pre_b], function onSeriesDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).to.have.property('pre_b', 'pre_b');
-      return done();
-    });
-  });
-
-  it('.make.series()', function (done) {
-    var fn = flw.make.series([pre_a, pre_b]);
-    fn(function onMakeSeriesDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).to.have.property('pre_b', 'pre_b');
-      return done();
-    });
-  });
-
-  it('.parallel()', function (done) {
-    flw.parallel([pre_a, pre_b], function onParallelDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).to.have.property('pre_b', 'pre_b');
-      return done();
-    });
-  });
-
-  it('.make.parallel()', function (done) {
-    var fn = flw.make.parallel([pre_a, pre_b]);
-    fn(function onMakeParallelDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).to.have.property('pre_b', 'pre_b');
-      return done();
-    });
-  });
-
-  it('.each()', function (done) {
-    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-
-    return flw.each(items, eachItemHandler, function (err, results) {
-      expect(err).to.be(null);
-      expect(results).to.contain('aa');
-      expect(results).to.contain('ff');
-      expect(results).have.length(items.length);
-      return done();
-    });
-    function eachItemHandler(item, cb) {
-      return cb(null, item+item);
-    }
-  });
-
-  it('.wrap()', function (done) {
-    var expectedResult = 'expectedResult';
-
-    var obj = {
-      value: 42,
-
-      getValue : function getValue(expected, cb) {
-        if (cb === undefined && typeof(expected) === 'function') {
-          cb = expected;
-          expected = undefined;
-        }
-        if (expected) return cb(null, expected);
-
-        return cb(null, this.value);
-      }
-    };
-
-    flw.series([
-      flw.wrap(obj.getValue.bind(obj)),
-      flw.wrap(obj.getValue.bind(obj), 'default'),
-      flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
-    ], function onWrapHandlerDone(err, context) {
-      expect(err).to.be(null);
-      expect(context._clean()).to.eql({
-        default: 42,
-        expected: expectedResult
-      });
-      return done();
-    });
-  });
-
-  it('.series() with injected context', function (done) {
-    var preSet = {preset: 'preset'};
-
-    flw.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
-      expect(err).to.be(null);
-      expect(context).to.have.property('preset', 'preset');
-      expect(context).to.have.property('pre_a', 'pre_a');
-      expect(context).to.have.property('pre_b', 'pre_b');
-      return done();
-    });
-  });
-});
 
 
 describe('Context handling', function () {
@@ -168,7 +68,127 @@ describe('Context handling', function () {
 });
 
 
-describe('Complex flows', function () {
+describe('Basic operations', function () {
+
+  describe('.series', function () {
+    it('.series()', function (done) {
+      flw.series([pre_a, pre_b], function onSeriesDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.make.series()', function (done) {
+      var fn = flw.make.series([pre_a, pre_b]);
+      fn(function onMakeSeriesDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.series() with injected context', function (done) {
+      var preSet = {preset: 'preset'};
+
+      flw.series([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('preset', 'preset');
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+  });
+
+  describe('.parallel', function () {
+    it('.parallel()', function (done) {
+      flw.parallel([pre_a, pre_b], function onParallelDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.make.parallel()', function (done) {
+      var fn = flw.make.parallel([pre_a, pre_b]);
+      fn(function onMakeParallelDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.parallel() with injected context', function (done) {
+      var preSet = {preset: 'preset'};
+
+      flw.parallel([pre_a, pre_b], preSet, function onSeriesDone(err, context) {
+        expect(err).to.be(null);
+        expect(context).to.have.property('preset', 'preset');
+        expect(context).to.have.property('pre_a', 'pre_a');
+        expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+  });
+
+  describe('.each', function () {
+    it('.each()', function (done) {
+      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+      return flw.each(items, eachItemHandler, function (err, results) {
+        expect(err).to.be(null);
+        expect(results).to.contain('aa');
+        expect(results).to.contain('ff');
+        expect(results).have.length(items.length);
+        return done();
+      });
+      function eachItemHandler(item, cb) {
+        return cb(null, item+item);
+      }
+    });
+  });
+
+  describe('.wrap', function () {
+    it('.wrap()', function (done) {
+      var expectedResult = 'expectedResult';
+
+      var obj = {
+        value: 42,
+
+        getValue : function getValue(expected, cb) {
+          if (cb === undefined && typeof(expected) === 'function') {
+            cb = expected;
+            expected = undefined;
+          }
+          if (expected) return cb(null, expected);
+
+          return cb(null, this.value);
+        }
+      };
+
+      flw.series([
+        flw.wrap(obj.getValue.bind(obj)),
+        flw.wrap(obj.getValue.bind(obj), 'default'),
+        flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
+      ], function onWrapHandlerDone(err, context) {
+        expect(err).to.be(null);
+        expect(context._clean()).to.eql({
+          default: 42,
+          expected: expectedResult
+        });
+        return done();
+      });
+    });
+  });
+});
+
+
+describe('Combination flow', function () {
   it('combination flow', function (done) {
     flw.series([
       flw.make.parallel([pre_a, pre_b]),
@@ -189,41 +209,19 @@ describe('Complex flows', function () {
 });
 
 
-describe('Context separation', function () {
-  it('separates contexts between independent runs (this safe)', function (done) {
-    var batchHandlers = [pre_a, pre_b];
-    var batch = {};
-
-    batchHandlers.forEach(function (bh) {
-      var handlers = [];
-      for (var n=0; n<50; n++) {
-        handlers.push(deferHandler(bh));
-      }
-      debug('calling flw.make.parallel on '+bh.name);
-      batch[bh.name] = flw.make.parallel(handlers);
-    });
-
-    // test with async
-    //  if we would run with flow it would combine the contexts
-    debug('starting async');
-    return async.parallel(batch, function (err, results) {
-      expect(err).to.be(null);
-      expect(results).to.only.have.keys(['pre_a', 'pre_b']);
-      expect(results.pre_a._clean()).to.only.have.keys(['pre_a']);
-      expect(results.pre_b._clean()).to.only.have.keys(['pre_b']);
-      return done(err);
-    });
-  });
-});
-
-
 /**
- * Specialised handlers that will check the state of the context
+ * Handlers used for testing
  */
-
-
 function dummyHandler(context, cb) {
   return cb();
+}
+
+function test_stop(context, cb) {
+  return context._stop('flw stopped ..', cb);
+}
+
+function test_stop_noReason(context, cb) {
+  return context._stop(cb);
 }
 
 function pre_a(context, cb) {
@@ -248,14 +246,6 @@ function work_a(context, cb) {
   context.work_a = 'work_a';
   // debug('work_a', context);
   return cb();
-}
-
-function test_stop(context, cb) {
-  return context._stop('flw stopped ..', cb);
-}
-
-function test_stop_noReason(context, cb) {
-  return context._stop(cb);
 }
 
 function work_b(context, cb) {
@@ -286,20 +276,4 @@ function post_b(context, cb) {
   context.post_b = 'post_b';
   // debug('post_b', context);
   return cb();
-}
-
-
-/**
- * Returns a deferred handler call (to enforce randomness)
- *
- * @private
- */
-
-function deferHandler(handler) {
-  var df = function deferredHandler(context, callback) {
-    var timeoutMs = Math.round(Math.random() * 20);
-    debug('calling deferredHandler '+handler.name, {timeout: timeoutMs});
-    setTimeout(handler, timeoutMs, context, callback);
-  };
-  return df;
 }
