@@ -194,6 +194,11 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+v0.0.16
+
+* Fix handling of empty arrays to .series() & .parallel()
+* Lets hope this one actually gets published to NPM
+
 v0.0.15
 
 * Allow context._stop(cb)  (without reason)
