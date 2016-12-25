@@ -93,7 +93,7 @@ describe('Basic operations', function () {
 
     it('.make.series()', function (done) {
       var fn = flw.make.series([
-        pre_a, 
+        pre_a,
         pre_b
       ]);
       return fn(function onMakeSeriesDone(err, context) {
@@ -181,7 +181,7 @@ describe('Basic operations', function () {
         expect(results).have.length(items.length);
         return done();
       });
-      
+
       function eachItemHandler(item, cb) {
         return cb(null, item+item);
       }
