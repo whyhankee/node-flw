@@ -208,6 +208,7 @@ v0.0.17 (todo)
 
 * Implement flw.times()
 * Update dependencies
+* Reduce Travis-CI build environments to 0.10 + LTS versions
 
 v0.0.16
 
