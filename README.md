@@ -204,7 +204,7 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
-v0.0.17 (todo)
+v0.0.17
 
 * Implement flw.times()
 * Update dependencies
