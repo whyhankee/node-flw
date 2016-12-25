@@ -146,6 +146,16 @@ var numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
+### .times(num, fn, callback)
+
+Call an async function `num` times and return the results as an Array
+
+example:
+
+```
+flw.times(2, doItem, function (err, results) { ... });
+```
+
 
 ### .wrap(fn, [arguments], [key])
 
@@ -193,6 +203,10 @@ Also, please don't forget to check this when you submit a PR
 
 
 ## Changelog
+
+v0.0.17 (todo)
+
+* Implement flw.times()
 
 v0.0.16
 

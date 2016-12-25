@@ -145,6 +145,21 @@
     }
   }
 
+  function times(num, fn, done) {
+    var results = [];
+    return nextItem();
+
+    function nextItem() {
+      if (results.length >= num) return done(null, results);
+
+      callFn(fn, function (err, result) {
+        if (err) return done(err);
+
+        results.push(result);
+        return nextItem();
+      });
+    }
+  }
 
   /**
    * build the list of exposed methods into the .make syntax
@@ -246,9 +261,10 @@
   Object.keys(fnMap).forEach(function(key) {
     flw[key] = fnMap[key];
   });
-  flw.wrap = wrap;
   flw.make = make();
+  flw.wrap = wrap;
   flw.each = each;
+  flw.times = times;
 
   if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {

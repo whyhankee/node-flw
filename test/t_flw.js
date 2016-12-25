@@ -196,6 +196,21 @@ describe('Basic operations', function () {
     });
   });
 
+  describe('.times', function () {
+    it('.times()', function (done) {
+      return flw.times(2, doTimes, function (err, results) {
+        if (err) return done(err);
+
+        expect(results).to.eql(['a', 'a']);
+        return done();
+      });
+
+      function doTimes(cb) {
+        return cb(null, 'a');
+      }
+    });
+  });
+
   describe('.wrap', function () {
     it('.wrap()', function (done) {
       var expectedResult = 'expectedResult';
