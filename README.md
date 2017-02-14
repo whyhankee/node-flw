@@ -204,6 +204,11 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+v0.0.18
+
+* Don’t throw on 2nd error in a .parallel
+* Update dependencies
+
 v0.0.17
 
 * Implement flw.times()
