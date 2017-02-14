@@ -76,7 +76,8 @@
       if (++numDone >= numTodo) return callDone(err);
     }
     function callDone(err) {
-      if (doneCalled) throw new Error('done already called');
+      // We cannot call done twice :(
+      if (doneCalled) return;
 
       doneCalled = true;
       return done(err || null, context);

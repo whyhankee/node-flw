@@ -168,6 +168,16 @@ describe('Basic operations', function () {
     it('.parallel() - no functions', function (done) {
       return flw.parallel([], done);
     });
+
+    it('.parallel() - error handling', function (done) {
+      return flw.parallel([
+        dummyErrHandler,
+        dummyErrHandler
+      ], function (err) {
+        expect(err.toString()).to.be('Error: someErrorOccured');
+        return done();
+      });
+    });
   });
 
   describe('.each', function () {
@@ -271,6 +281,10 @@ describe('Combination flow', function () {
  */
 function dummyHandler(context, cb) {
   return cb();
+}
+
+function dummyErrHandler(context, cb) {
+  return cb(new Error('someErrorOccured'));
 }
 
 function test_stop(context, cb) {
