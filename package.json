@@ -15,12 +15,12 @@
     "url": "git@github.com:whyhankee/flw.git"
   },
   "devDependencies": {
-    "debug": "2.6.1",
+    "debug": "2.6.8",
     "eslint": "<2.8",
     "expect.js": "0.3.1",
     "fastbench": "1.0.1",
-    "mocha": "3.2.0",
-    "uglify-js": "2.7.5"
+    "mocha": "3.4.2",
+    "uglify-js": "3.0.22"
   },
   "author": "Paul Wijhenke <paul@paulsplace.nl>",
   "license": "MIT"
