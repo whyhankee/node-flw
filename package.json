@@ -6,6 +6,8 @@
   "scripts": {
     "test": "mocha test/t_flw.js && eslint *.js test/*.js",
     "tdd": "mocha -w test/t_flw.js",
+    "coverage": "istanbul cover -- ./node_modules/.bin/_mocha test/t_flw.js",
+    "coveralls": "coveralls < coverage/lcov.info",
     "benchmark": "time node ./test/b_flw.js",
     "build": "uglifyjs flw.js -c \"evaluate=false\" -m --source-map dist/flw-min.map -o dist/flw-min.js"
   },
@@ -15,6 +17,7 @@
     "url": "git@github.com:whyhankee/flw.git"
   },
   "devDependencies": {
+    "coveralls": "2.13.1",
     "debug": "2.6.8",
     "eslint": "<2.8",
     "expect.js": "0.3.1",
