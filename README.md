@@ -205,6 +205,11 @@ Also, please don't forget to check this when you submit a PR
 
 ## Changelog
 
+vNext
+
+* Update dependencies
+  Note: Map file renamed to flw-min.js.map due to changes in unglify-js
+
 v0.0.18
 
 * Don’t throw on 2nd error in a .parallel
