@@ -208,7 +208,7 @@ Also, please don't forget to check this when you submit a PR
 vNext
 
 * Update dependencies
-  Note: Map file renamed to flw-min.js.map due to changes in unglify-js
+  Note: Map file renamed to flw-min.js.map due to changes in uglify-js
 
 v0.0.18
 
