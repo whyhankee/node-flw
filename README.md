@@ -24,9 +24,9 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
 
-* Be able to stop the flow, keeping the err mechanism for system-errors - Sometimes there is just no more work to be done. Only useful in a .series()
+* Be able to stop the flow, keeping the err mechanism for system-errors - Sometimes there is just no more work to be done. Only useful in a `.series()`
 
-* Auto-avoid 'callback on the same tick' stack-overflow issues, all functions will be called with setImmediate().
+* Auto-avoid 'callback on the same tick' stack-overflow issues, all functions will be called with `setImmediate()` (or `setTimeout()` in a browser).
 
 
 *Note*
@@ -182,11 +182,11 @@ flw.series([
 
 Store the result of an async operation on the context and call the callback
 
-### _stop(reason, cb)
+### ._stop(reason, cb)
 
 Stops the flow in a .series() call, stores `reason` in `context._stopped`.
 
-### _clean()
+### ._clean()
 
 Returns a copy of the context without the `flw`-related data
 

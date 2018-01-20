@@ -4,14 +4,17 @@
   var root = this;
 
   // Globals
-  var fnMap = {};
   var callFn = _callSetTimeout;
+  var fnMap = {};
 
   var ourContextKeys = [
-    '_stopped',
-    '_stop',
+    // methods
     '_store',
+    '_stop',
+    '_stopped',
     '_clean',
+
+    // deprecated
     '_flw_store'
   ];
 
@@ -21,7 +24,10 @@
   }
 
   /**
-   * Call functions in series (order of array)
+   * Call functions in order of the array
+   * @param {function[]} fns Array of function to execute
+   * @param {Object} [context] The initial context object (optional)
+   * @param {function} done callback
    */
   fnMap.series = function series(fns, context, done) {
     if (done === undefined && typeof context === 'function') {
@@ -37,11 +43,11 @@
     return callFunction();
 
     function callFunction() {
-      if (context._stopped) {
-        return onSeriesCallDone(null, null);
-      }
+      if (context._stopped) return onSeriesCallDone(null, null);
+
       callFn(fns[fnIterator], context, onSeriesCallDone);
     }
+
     function onSeriesCallDone(err) {
       if (err) return done(err, context);
 
@@ -53,6 +59,9 @@
 
   /**
    * Call functions in parallel
+   * @param {function[]} fns Array of function to exectute
+   * @param {Object} [context] The initial context object (optional)
+   * @param {function} done callback
    */
   fnMap.parallel = function parallel(fns, context, done) {
     if (done === undefined && typeof context === 'function') {
@@ -76,7 +85,7 @@
       if (++numDone >= numTodo) return callDone(err);
     }
     function callDone(err) {
-      // We cannot call done twice :(
+      // We cannot call done twice, a possible error would be lost here
       if (doneCalled) return;
 
       doneCalled = true;
@@ -84,7 +93,13 @@
     }
   };
 
-  function wrap(wrapFn, args, key) {
+  /**
+   * Returns wrapped regular function that stores the result on the context key
+   * @param {function} fn function to wrap
+   * @param {any[]} [args] Array of arguments to pass (optional)
+   * @param {String} [key] name of context key to store the result in (optional)
+   */
+  function wrap(fn, args, key) {
     var self = this;
 
     if (key === undefined && typeof(args) === 'string') {
@@ -97,7 +112,7 @@
       var copyArgs = args.slice(args);
       copyArgs.unshift(self);
       copyArgs.push(onWrappedDone);
-      return wrapFn.bind.apply(wrapFn, copyArgs)();
+      return fn.bind.apply(fn, copyArgs)();
 
       function onWrappedDone(err, result) {
         if (err) return cb(err);
@@ -108,6 +123,13 @@
     };
   }
 
+  /**
+   * Calls fn with every item in the array
+   * @param {any[]} items Array items to process
+   * @param {Number} [numParallel] Limit parallelisation (default: 3)
+   * @param {function} fn function call for each item
+   * @param {function} done callback
+   */
   function each(items, numParralel, fn, done) {
     if (done === undefined) {
       done = fn; fn = numParralel;
@@ -146,6 +168,12 @@
     }
   }
 
+  /**
+   * Calls fn x times
+   * @param {Number} [num] number of times to call fn
+   * @param {function} fn function call for each item
+   * @param {function} done callback
+   */
   function times(num, fn, done) {
     var results = [];
     return nextItem();
@@ -205,12 +233,11 @@
 
 
   /**
-   * Create a new Flw context when a flow is starting
+   * Ensures a enrichched flw context when a flow is starting
    * @private
    */
   function _checkContext (c) {
-    // Already done?
-    if (c._store) return;
+    if (c._stopped) return; // Already done?
 
     c._stopped = null;
 
@@ -226,7 +253,7 @@
     };
 
     // Stores the data returned from the callback in the context with key 'key'
-    //    then calls the callback
+    //  then calls the callback
     c._store = function _flw_store(key, cb) {
       var self = this;
 
@@ -239,6 +266,7 @@
       return fn;
     };
 
+    // Cleans all flw related properties from the context object
     c._clean = function _flw_clean() {
       var self = this;
       var contextCopy = {};
