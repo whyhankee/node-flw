@@ -237,24 +237,30 @@
    * @private
    */
   function _checkContext (c) {
-    if (c._stopped) return; // Already done?
+    if (c.hasOwnProperty('_stopped')) return; // Already done?
 
     c._stopped = null;
 
     // Indicate that we gracefully stop
     //  if set, stops the flow until we are back to the main callback
-    c._stop = function _flw_stop(reason, cb) {
+    function _flw_stop(reason, cb) {
       if (!cb && typeof reason === 'function') {
         cb = reason;
         reason = 'stopped';
       }
       c._stopped = reason;
       return cb();
-    };
+    }
+    Object.defineProperty(c, '_stop', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: _flw_stop,
+    });
 
     // Stores the data returned from the callback in the context with key 'key'
     //  then calls the callback
-    c._store = function _flw_store(key, cb) {
+    function _flw_store(key, cb) {
       var self = this;
 
       var fn = function (err, data) {
@@ -264,10 +270,15 @@
         return cb();
       };
       return fn;
-    };
+    }
+    Object.defineProperty(c, '_store', {
+      enumerable: false,
+      configurable: false,
+      value: _flw_store,
+    });
 
     // Cleans all flw related properties from the context object
-    c._clean = function _flw_clean() {
+    function _flw_clean() {
       var self = this;
       var contextCopy = {};
       Object.keys(this).forEach(function (k) {
@@ -275,10 +286,20 @@
         contextCopy[k] = self[k];
       });
       return contextCopy;
-    };
+    }
+    Object.defineProperty(c, '_clean', {
+      enumerable: false,
+      configurable: false,
+      value: _flw_clean,
+    });
 
     // compatibilty for a while
-    c._flw_store = c._store;
+    Object.defineProperty(c, '_flw_store', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: _flw_store,
+    });
 
     return c;
   }

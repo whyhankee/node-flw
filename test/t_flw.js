@@ -10,12 +10,12 @@ describe('Context handling', function () {
   it('correct context keys', function (done) {
     return flw.series([dummyHandler], function (err, context) {
       expect(err).to.be(null);
-      expect(context).to.only.have.keys([
-        '_stopped',
-        '_stop',
-        '_store', '_flw_store',
-        '_clean'
-      ]);
+
+      expect(context).to.have.property('_stopped');
+      expect(context).to.have.property('_stop');
+      expect(context).to.have.property('_store');
+      expect(context).to.have.property('_flw_store');
+      expect(context).to.have.property('_clean');
       return done();
     });
   });
