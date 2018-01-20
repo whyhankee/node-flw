@@ -147,7 +147,23 @@ var numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
-### .times(num, fn, callback)
+### .n(num, fn, callback)
+
+Call an async function `num` times and return the results as an Array
+The difference with `.times` is that `.n` will pass the index as first argument
+
+example:
+
+```
+flw.times(2, doItem, function (err, results) { ... });
+
+function doItem(index, done) {
+  return done(null, index);
+}
+```
+
+
+### .times(num, fn, callback) - deprecated, use .n()
 
 Call an async function `num` times and return the results as an Array
 
@@ -155,6 +171,10 @@ example:
 
 ```
 flw.times(2, doItem, function (err, results) { ... });
+
+function doItem(done) {
+  return done(null);
+}
 ```
 
 

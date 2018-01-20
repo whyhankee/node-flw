@@ -206,6 +206,23 @@ describe('Basic operations', function () {
     });
   });
 
+  describe('.n', function () {
+    it('.n()', function (done) {
+      return flw.n(3, doTimes, function (err, results) {
+        if (err) return done(err);
+
+        expect(results).to.eql(['a0', 'a1', 'a2']);
+        return done();
+      });
+
+      function doTimes(index, cb) {
+        return cb(null, 'a'+index);
+      }
+    });
+  });
+
+  // should be deprecated, does not pass the index
+  //  but I know of code that uses it :(
   describe('.times', function () {
     it('.times()', function (done) {
       return flw.times(2, doTimes, function (err, results) {

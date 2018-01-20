@@ -169,6 +169,28 @@
   }
 
   /**
+   * Calls fn x times (with index)
+   * @param {Number} [num] number of times to call fn
+   * @param {function} fn function call for each item
+   * @param {function} done callback
+   */
+  function n(num, fn, done) {
+    var results = [];
+    return nextItem();
+
+    function nextItem() {
+      if (results.length >= num) return done(null, results);
+
+      callFn(fn, results.length, function (err, result) {
+        if (err) return done(err);
+
+        results.push(result);
+        return nextItem();
+      });
+    }
+  }
+
+  /**
    * Calls fn x times
    * @param {Number} [num] number of times to call fn
    * @param {function} fn function call for each item
@@ -314,6 +336,7 @@
   flw.make = make();
   flw.wrap = wrap;
   flw.each = each;
+  flw.n = n;
   flw.times = times;
 
   if (typeof exports !== 'undefined') {
