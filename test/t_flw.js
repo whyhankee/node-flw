@@ -180,25 +180,6 @@ describe('Basic operations', function () {
     });
   });
 
-  describe('.eachSeries', function () {
-    it('.each()', function (done) {
-      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-
-      return flw.each(items, eachItemHandler, function (err, results) {
-        expect(err).to.be(null);
-        expect(results.length).to.be(items.length);
-        expect(results).to.contain('aa');
-        expect(results).to.contain('ff');
-        expect(results).have.length(items.length);
-        return done();
-      });
-
-      function eachItemHandler(item, cb) {
-        return cb(null, item + item);
-      }
-    });
-  });
-
   describe('.each', function () {
     it('.each()', function (done) {
       var items = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -226,6 +207,23 @@ describe('Basic operations', function () {
 
       function eachHandler(item, cb) {
         return cb();
+      }
+    });
+
+    it('.eachSeries()', function (done) {
+      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+      return flw.eachSeries(items, eachItemHandler, function (err, results) {
+        expect(err).to.be(null);
+        expect(results.length).to.be(items.length);
+        expect(results).to.contain('aa');
+        expect(results).to.contain('ff');
+        expect(results).have.length(items.length);
+        return done();
+      });
+
+      function eachItemHandler(item, cb) {
+        return cb(null, item + item);
       }
     });
   });

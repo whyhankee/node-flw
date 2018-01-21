@@ -125,17 +125,6 @@
 
   /**
    * Calls fn with every item in the array
-   * The items will be processed one at a time, preserving the result order
-   * @param {any[]} items Array items to process
-   * @param {function} fn function call for each item
-   * @param {function} done callback
-   */
-  function eachSeries(items, fn, done) {
-    return each(items, 1, fn, done);
-  }
-
-  /**
-   * Calls fn with every item in the array
    * @param {any[]} items Array items to process
    * @param {Number} [numParallel] Limit parallelisation (default: 3)
    * @param {function} fn function call for each item
@@ -180,8 +169,19 @@
   }
 
   /**
+   * Calls fn with every item in the array
+   * The items will be processed one at a time, preserving the result order
+   * @param {any[]} items Array items to process
+   * @param {function} fn function call for each item
+   * @param {function} done callback
+   */
+  function eachSeries(items, fn, done) {
+    return each(items, 1, fn, done);
+  }
+
+  /**
    * Calls fn x times (with index)
-   * @param {Number} [num] number of times to call fn
+   * @param {Number} num number of times to call fn
    * @param {function} fn function call for each item
    * @param {function} done callback
    */
@@ -202,7 +202,7 @@
   }
 
   /**
-   * Calls fn x times
+   * Calls fn x times (deprecated: Use .n)
    * @param {Number} [num] number of times to call fn
    * @param {function} fn function call for each item
    * @param {function} done callback
