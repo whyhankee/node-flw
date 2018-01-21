@@ -36,41 +36,63 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 ### Example usage
 
-```
+```javascript
 var flw = require('flw');
 
 function processFile(filename, done) {
-  return flw.series([
-    flw.fwap(fs.readFile, ['./source.txt', 'utf8], 'file'),
-    doSomethingFirst,
+  var flow = [
+    flw.fwap(fs.readFile, ['./userid.txt', 'utf8], 'file'),
+    getUserData,
     flw.make.parallel([
-      doSomethingElse,
-      doSomethingElseToo
+      doSomething,
+      doSomethingElse
     ])
     doSomethingLast,
-  ], (err, context) => {
+  ];
+
+  return flw.series(flow, (err, context) => {
     if (err) return done(err);
 
     if (context._stopped === 'emptyFile') {
       return done(null, null);
     }
-
     return done(null, context.result);
   });
 }
 
-function doSomethingFirst(c, cb) {
+function getUserData(c, cb) {
   console.log('contents of the file', c.file);
 
+  // c.file is the result from `fs.readFile()`
+  // c._stop() will stop the flow
   if (!c.file.length) return c._stop('emptyFile', cb);
-  ...
+
+  // We assume there is one userId in the file
+  var userId = parseInt(c.file);
+
+  // so you can do:
+  // return lookupUserId(userId, (err, userData) => {
+  //  if (err) return cb(err);
+  //  context.userData = userData;
+  //  return cb();
+  // });
+
+  // or, same as above.
+  return lookupUserId(userId, c._store('userData', cb));
+}
+
+function doSomething(c, cb) {
+  // ...
   return cb();
 }
 
-...
+function doSomethingElse(c, cb) {
+  // ...
+  return cb();
+}
 
-function doSomethingLast() {
-  context.result = ....;
+function doSomethingLast(c, cb) {
+  c.result = ....;
   return cb();
 }
 ```
