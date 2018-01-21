@@ -5,7 +5,7 @@ Another callback flow control library, inspired by `async` and `bach`.
 [![Travis-CI](https://travis-ci.org/whyhankee/node-flw.svg)](https://travis-ci.org/whyhankee/node-flw)
 [![Coverage Status](https://coveralls.io/repos/github/whyhankee/node-flw/badge.svg?branch=master)](https://coveralls.io/github/whyhankee/node-flw?branch=master)
 [![David](https://david-dm.org/whyhankee/node-flw.svg)](https://david-dm.org)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/whyhankee/node-flw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/node-flw/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 
 ## What / Why
