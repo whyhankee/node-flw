@@ -180,12 +180,32 @@ describe('Basic operations', function () {
     });
   });
 
+  describe('.eachSeries', function () {
+    it('.each()', function (done) {
+      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+      return flw.each(items, eachItemHandler, function (err, results) {
+        expect(err).to.be(null);
+        expect(results.length).to.be(items.length);
+        expect(results).to.contain('aa');
+        expect(results).to.contain('ff');
+        expect(results).have.length(items.length);
+        return done();
+      });
+
+      function eachItemHandler(item, cb) {
+        return cb(null, item + item);
+      }
+    });
+  });
+
   describe('.each', function () {
     it('.each()', function (done) {
       var items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
       return flw.each(items, eachItemHandler, function (err, results) {
         expect(err).to.be(null);
+        expect(results.length).to.be(items.length);
         expect(results).to.contain('aa');
         expect(results).to.contain('ff');
         expect(results).have.length(items.length);
@@ -198,7 +218,11 @@ describe('Basic operations', function () {
     });
 
     it('.each() - no items', function (done) {
-      return flw.each([], eachHandler, done);
+      return flw.each([], eachHandler, function (err, results) {
+        expect(err).to.be(null);
+        expect(results.length).to.be(0);
+        return done();
+      });
 
       function eachHandler(item, cb) {
         return cb();

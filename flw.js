@@ -125,6 +125,17 @@
 
   /**
    * Calls fn with every item in the array
+   * The items will be processed one at a time, preserving the result order
+   * @param {any[]} items Array items to process
+   * @param {function} fn function call for each item
+   * @param {function} done callback
+   */
+  function eachSeries(items, fn, done) {
+    return each(items, 1, fn, done);
+  }
+
+  /**
+   * Calls fn with every item in the array
    * @param {any[]} items Array items to process
    * @param {Number} [numParallel] Limit parallelisation (default: 3)
    * @param {function} fn function call for each item
@@ -335,6 +346,7 @@
   });
   flw.make = make();
   flw.wrap = wrap;
+  flw.eachSeries = eachSeries;
   flw.each = each;
   flw.n = n;
   flw.times = times;

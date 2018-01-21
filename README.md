@@ -132,11 +132,23 @@ flw.series([
 ], onDone);
 ```
 
+### .eachSeries(items, fn, callback)
+
+Simple async Array processing (one at a time).
+
+example:
+
+```
+var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+var numParallel = 5;  // optional (default 3)
+flw.each(items, numParallel, doItem, function (err, results) { ... });
+```
+
 ### .each(items, [numParallel], fn, callback)
 
-Simple async Array processing.
+Simple async Array processing (in parallel).
 
-*Note: When running `each()` in parallel your items could be returned out of order. If the order is really important use `numParallel=0`.*
+*Note: When running `each()` in parallel your items could be returned out of order. If the order is really important use `.eachSeries()`.*
 
 example:
 
