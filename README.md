@@ -225,7 +225,7 @@ flw.series([
 ], function (err, context) {
   if (err) throw err;
 
-  console.log(context.hostFile);
+  console.log(context.hostfile);
 }
 ```
 
