@@ -39,41 +39,39 @@ Another callback flow control library, inspired by `async` and `bach`.
 ```
 var flw = require('flw');
 
-var db = ...;
-var eventManager = ...;
-
-
-function createUser(userProps, done) {
-  var context = {                               // Initial flw context
-    newUserProps: validateUserProps(userProps)
-  };
-
-  var postCreateFn = flw.make.parallel([        // make a parallel flw function
-    _sendUserCreatedEvent
-    _somethingElse,
-  ]);
-
-  return flw.series([                           // Run in series
-    _createUser,
-    postCreateFn,                               // These ones will be executed in parallel
-  ], context, function (err, context) {
+function processFile(filename, done) {
+  return flw.series([
+    flw.fwap(fs.readFile, ['./source.txt', 'utf8], 'file'),
+    doSomethingFirst,
+    flw.make.parallel([
+      doSomethingElse,
+      doSomethingElseToo
+    ])
+    doSomethingLast,
+  ], (err, context) => {
     if (err) return done(err);
 
-    return done(null, context.user);             // return the new user
+    if (context._stopped === 'emptyFile') {
+      return done(null, null);
+    }
+
+    return done(null, context.result);
   });
 }
 
-function _createUser(context, cb) {
-  var user = new db.User(c.userProps);
-  return user.save(context._store('user', cb));  // Create user in db, store in context
+function doSomethingFirst(c, cb) {
+  console.log('contents of the file', c.file);
+
+  if (!c.file.length) return c._stop('emptyFile', cb);
+  ...
+  return cb();
 }
 
-function _sendUserCreatedEvent(context, cb) {
-  var newEvent = {
-    queue: 'app.user.created',
-    id: context.user.id                          // use the user.id from the context
-  };
-  return eventManager.publish(newEvent, cb);
+...
+
+function doSomethingLast() {
+  context.result = ....;
+  return cb();
 }
 ```
 
@@ -81,6 +79,7 @@ function _sendUserCreatedEvent(context, cb) {
 ## Installation
 
     npm install flw
+
 
 ## API
 
