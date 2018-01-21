@@ -41,12 +41,12 @@ var flw = require('flw');
 
 function processFile(filename, done) {
   var flow = [
-    flw.fwap(fs.readFile, ['./userid.txt', 'utf8], 'file'),
+    flw.fwap(fs.readFile, ['./userid.txt', 'utf8'], 'file'),
     getUserData,
     flw.make.parallel([
       doSomething,
       doSomethingElse
-    ])
+    ]),
     doSomethingLast,
   ];
 
