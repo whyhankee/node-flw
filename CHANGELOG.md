@@ -1,5 +1,12 @@
 ## flw changelog
 
+#### v0.1.0
+
+* Changed github project name to `node-flw`
+* Implement `flw.n()`
+* Implement `flw.eachSeries()`
+* Make context functions non-enumerable
+* Drop Node 0.10 support
 
 #### v0.0.18
 
