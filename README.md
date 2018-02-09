@@ -105,9 +105,10 @@ function doSomethingLast(c, cb) {
 
 ## API
 
-### .series([fn, fn], [context], done)
+### .series([fn, fn], [context], done, [key])
 
 Will call the functions in series, you can provide an initial context by passing a context object.
+If key is present only context[key] will be passed to done()
 
 example:
 ```
@@ -120,9 +121,10 @@ flw.series([a, b, c], context, function (err, context) {
 });
 ```
 
-### .parallel([fn, fn], [context], done)
+### .parallel([fn, fn], [context], done, [key])
 
 Will call the functions in parallel, you can provide an initial context by passing a context object.
+If key is present only context[key] will be passed to done()
 
 example:
 ```

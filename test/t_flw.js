@@ -91,6 +91,19 @@ describe('Basic operations', function () {
       });
     });
 
+    it('.series with return key', function (done) {
+      return flw.series([
+        pre_a,
+        pre_b
+      ], onSeriesDone, 'pre_a');
+
+      function onSeriesDone(err, value) {
+        expect(err).to.be(null);
+        expect(value).to.be('pre_a');
+        return done();
+      }
+    });
+
     it('.make.series()', function (done) {
       var fn = flw.make.series([
         pre_a,
@@ -135,6 +148,19 @@ describe('Basic operations', function () {
         expect(context).to.have.property('pre_b', 'pre_b');
         return done();
       });
+    });
+
+    it('.parallel() with return key', function (done) {
+      return flw.parallel([
+        pre_a,
+        pre_b
+      ], onParallelDone, 'pre_b');
+
+      function onParallelDone(err, value) {
+        expect(err).to.be(null);
+        expect(value).to.be('pre_b');
+        return done();
+      }
     });
 
     it('.make.parallel()', function (done) {

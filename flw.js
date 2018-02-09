@@ -27,31 +27,34 @@
    * Call functions in order of the array
    * @param {function[]} fns Array of function to execute
    * @param {Object} [context] The initial context object (optional)
+   * @param {String} [key] context key to return to done()
    * @param {function} done callback
    */
-  fnMap.series = function series(fns, context, done) {
-    if (done === undefined && typeof context === 'function') {
-      done = context;
+  fnMap.series = function series(fns, context, done, key) {
+    if (typeof done !== 'function' && typeof context === 'function') {
+      key = done; done = context;
       context = {};
     }
+    var fnIterator = 0;
+    var numTodo = fns.length;
+
     _checkContext(context);
 
-    var numTodo = fns.length;
-    if (numTodo <= 0) return callFn(done, null, context);
-
-    var fnIterator = 0;
+    if (numTodo <= 0) return seriesDone(null);
     return callFunction();
 
     function callFunction() {
-      if (context._stopped) return onSeriesCallDone(null, null);
+      if (context._stopped) return seriesDone(null, null);
 
-      callFn(fns[fnIterator], context, onSeriesCallDone);
+      callFn(fns[fnIterator], context, seriesDone);
     }
 
-    function onSeriesCallDone(err) {
+    function seriesDone(err) {
       if (err) return done(err, context);
 
-      if (++fnIterator >= numTodo) return done(null, context);
+      if (++fnIterator >= numTodo) {
+        return done(null, key ? context[key] : context);
+      }
       return callFunction();
     }
   };
@@ -61,35 +64,37 @@
    * Call functions in parallel
    * @param {function[]} fns Array of function to exectute
    * @param {Object} [context] The initial context object (optional)
+   * @param {String} [key] context key to return to done()
    * @param {function} done callback
    */
-  fnMap.parallel = function parallel(fns, context, done) {
-    if (done === undefined && typeof context === 'function') {
-      done = context;
+  fnMap.parallel = function parallel(fns, context, done, key) {
+    if (typeof done !== 'function' && typeof context === 'function') {
+      key = done; done = context;
       context = {};
     }
-    _checkContext(context);
-
-    var numTodo = fns.length;
-    if (numTodo <= 0) return callFn(done, null, context);
-
     var numDone = 0;
+    var numTodo = fns.length;
     var doneCalled = false;
 
+    _checkContext(context);
+
+    if (numTodo <= 0) return parallelDone(null);
+
     fns.forEach(function (fn) {
-      return callFn(fn, context, onParallelCallDone);
+      return callFn(fn, context, onCallDone);
     });
 
-    function onParallelCallDone(err) {
-      if (err) return callDone(err);
-      if (++numDone >= numTodo) return callDone(err);
+    function onCallDone(err) {
+      if (err) return parallelDone(err);
+      if (++numDone >= numTodo) return parallelDone(err);
     }
-    function callDone(err) {
+
+    function parallelDone(err) {
       // We cannot call done twice, a possible error would be lost here
       if (doneCalled) return;
 
       doneCalled = true;
-      return done(err || null, context);
+      return done(err || null, key ? context[key] : context);
     }
   };
 
