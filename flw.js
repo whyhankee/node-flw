@@ -203,6 +203,7 @@
 
   /**
    * Calls fn x times (deprecated: Use .n)
+   * @deprecated use .n()
    * @param {Number} [num] number of times to call fn
    * @param {function} fn function call for each item
    * @param {function} done callback
