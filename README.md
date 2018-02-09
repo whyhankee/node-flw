@@ -49,15 +49,16 @@ function processFile(filename, done) {
     ]),
     doSomethingLast,
   ];
+  return flw.series(flow, onDone);
 
-  return flw.series(flow, (err, context) => {
+  function onDone(err, context) {
     if (err) return done(err);
 
     if (context._stopped === 'emptyFile') {
       return done(null, null);
     }
     return done(null, context.result);
-  });
+  }
 }
 
 function getUserData(c, cb) {
@@ -70,15 +71,16 @@ function getUserData(c, cb) {
   // We assume there is one userId in the file
   var userId = parseInt(c.file);
 
-  // so you can do:
+  // Fetch usser
+  return lookupUserId(userId, c._store('userData', cb));
+
+  // or, same as above ..
   // return lookupUserId(userId, (err, userData) => {
   //  if (err) return cb(err);
+  //
   //  context.userData = userData;
   //  return cb();
   // });
-
-  // or, same as above.
-  return lookupUserId(userId, c._store('userData', cb));
 }
 
 function doSomething(c, cb) {
