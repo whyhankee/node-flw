@@ -1,5 +1,10 @@
 ## flw changelog
 
+#### v0.1.1
+
+* .series & .parallel: Support return key
+* Update dependencies
+
 #### v0.1.0
 
 * Changed github project name to `node-flw`

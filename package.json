@@ -1,6 +1,6 @@
 {
   "name": "flw",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Another Flow Control library for JS",
   "main": "flw.js",
   "scripts": {
