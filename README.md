@@ -64,14 +64,13 @@ function processFile(filename, done) {
 function getUserData(c, cb) {
   console.log('contents of the file', c.file);
 
-  // c.file is the result from `fs.readFile()`
   // c._stop() will stop the flow
   if (!c.file.length) return c._stop('emptyFile', cb);
 
   // We assume there is one userId in the file
   var userId = parseInt(c.file);
 
-  // Fetch usser
+  // Fetch user from db
   return lookupUserId(userId, c._store('userData', cb));
 
   // or, same as above ..
