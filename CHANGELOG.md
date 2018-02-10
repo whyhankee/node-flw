@@ -1,8 +1,13 @@
 ## flw changelog
 
+#### v0.1.2
+
+* .series & .parallel: Change returnKey argument (before cb)
+* Update dependencies
+
 #### v0.1.1
 
-* .series & .parallel: Support return key
+* .series & .parallel: Support returnKey argument
 * Update dependencies
 
 #### v0.1.0
