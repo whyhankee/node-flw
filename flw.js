@@ -1,13 +1,13 @@
 'use strict';
 
-(function() {
-  var root = this;
+(function () {
+  const root = this;
 
   // Globals
-  var callFn = _callSetTimeout;
-  var fnMap = {};
+  let callFn = _callSetTimeout;
+  const fnMap = {};
 
-  var ourContextKeys = [
+  const ourContextKeys = [
     // methods
     '_store',
     '_stop',
@@ -43,8 +43,8 @@
         }
       }
     }
-    var fnIterator = 0;
-    var numTodo = fns.length;
+    let fnIterator = 0;
+    const numTodo = fns.length;
 
     _checkContext(context);
 
@@ -88,9 +88,9 @@
         }
       }
     }
-    var numDone = 0;
-    var numTodo = fns.length;
-    var doneCalled = false;
+    let numDone = 0;
+    const numTodo = fns.length;
+    let doneCalled = false;
 
     _checkContext(context);
     if (numTodo <= 0) return parallelDone(null);
@@ -120,7 +120,7 @@
    * @param {String} [key] name of context key to store the result in (optional)
    */
   function wrap(fn, args, key) {
-    var self = this;
+    const self = this;
 
     if (key === undefined && typeof(args) === 'string') {
       key = args;
@@ -129,7 +129,7 @@
     if (!args) args = [];
 
     return function wrapper(context, cb) {
-      var copyArgs = args.slice(args);
+      const copyArgs = args.slice(args);
       copyArgs.unshift(self);
       copyArgs.push(onWrappedDone);
       return fn.bind.apply(fn, copyArgs)();
@@ -158,11 +158,11 @@
 
     if (numParralel <= 0) numParralel = 1;
 
-    var doing = 0;
-    var numProcessing = 0;
-    var numDone = 0;
-    var numTotal = items.length;
-    var results = [];
+    let doing = 0;
+    let numProcessing = 0;
+    let numDone = 0;
+    const numTotal = items.length;
+    const results = [];
     return nextItem();
 
     function nextItem() {
@@ -206,7 +206,7 @@
    * @param {function} done callback
    */
   function n(num, fn, done) {
-    var results = [];
+    const results = [];
     return nextItem();
 
     function nextItem() {
@@ -229,7 +229,7 @@
    * @param {function} done callback
    */
   function times(num, fn, done) {
-    var results = [];
+    const results = [];
     return nextItem();
 
     function nextItem() {
@@ -249,8 +249,8 @@
    */
   function make() {
     // create a map of all flow functions wrapped by _make
-    var makeFnMap = {};
-    Object.keys(fnMap).forEach(function(key) {
+    const makeFnMap = {};
+    Object.keys(fnMap).forEach(function (key) {
       makeFnMap[key] = _make(fnMap[key]);
     });
     return makeFnMap;
@@ -295,7 +295,7 @@
    * Ensures a enrichched flw context when a flow is starting
    * @private
    */
-  function _checkContext (c) {
+  function _checkContext(c) {
     if (c.hasOwnProperty('_stopped')) return; // Already done?
 
     c._stopped = null;
@@ -320,9 +320,9 @@
     // Stores the data returned from the callback in the context with key 'key'
     //  then calls the callback
     function _flw_store(key, cb) {
-      var self = this;
+      const self = this;
 
-      var fn = function (err, data) {
+      const fn = function (err, data) {
         if (err) return cb(err);
 
         self[key] = data;
@@ -338,8 +338,8 @@
 
     // Cleans all flw related properties from the context object
     function _flw_clean() {
-      var self = this;
-      var contextCopy = {};
+      const self = this;
+      const contextCopy = {};
       Object.keys(this).forEach(function (k) {
         if (ourContextKeys.indexOf(k) !== -1) return;
         contextCopy[k] = self[k];
@@ -366,8 +366,8 @@
   /**
    * Export
    */
-  var flw = {};
-  Object.keys(fnMap).forEach(function(key) {
+  const flw = {};
+  Object.keys(fnMap).forEach(function (key) {
     flw[key] = fnMap[key];
   });
   flw.make = make();

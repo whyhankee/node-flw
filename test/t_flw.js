@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 'use strict';
-var expect = require('expect.js');
-var debug = require('debug')('flw:test');
+const expect = require('expect.js');
+const debug = require('debug')('flw:test');
 
-var flw = require('../flw');
+const flw = require('../flw');
 
 
 describe('Context handling', function () {
@@ -105,7 +105,7 @@ describe('.series', function () {
   });
 
   it('.make.series()', function (done) {
-    var fn = flw.make.series([
+    const fn = flw.make.series([
       pre_a,
       pre_b
     ]);
@@ -118,7 +118,7 @@ describe('.series', function () {
   });
 
   it('.make.series() with return key', function (done) {
-    var fn = flw.make.series([
+    const fn = flw.make.series([
       pre_a,
       pre_b
     ], 'pre_a');
@@ -130,7 +130,7 @@ describe('.series', function () {
   });
 
   it('.series() with injected context', function (done) {
-    var preSet = {preset: 'preset'};
+    const preSet = {preset: 'preset'};
 
     return flw.series([
       pre_a,
@@ -178,7 +178,7 @@ describe('.parallel', function () {
   });
 
   it('.make.parallel()', function (done) {
-    var fn = flw.make.parallel([
+    const fn = flw.make.parallel([
       pre_a,
       pre_b
     ]);
@@ -191,10 +191,10 @@ describe('.parallel', function () {
   });
 
   it('.make.parallel() with return key', function (done) {
-    var premadeContext = {
+    const premadeContext = {
       premade: 1,
     };
-    var fn = flw.make.parallel([
+    const fn = flw.make.parallel([
       pre_a,
       pre_b
     ], premadeContext, 'pre_b');
@@ -206,7 +206,7 @@ describe('.parallel', function () {
   });
 
   it('.parallel() with injected context', function (done) {
-    var preSet = {preset: 'preset'};
+    const preSet = {preset: 'preset'};
 
     return flw.parallel([
       pre_a,
@@ -237,7 +237,7 @@ describe('.parallel', function () {
 
 describe('.each', function () {
   it('.each()', function (done) {
-    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+    const items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
     return flw.each(items, eachItemHandler, function (err, results) {
       expect(err).to.be(null);
@@ -266,7 +266,7 @@ describe('.each', function () {
   });
 
   it('.eachSeries()', function (done) {
-    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+    const items = ['a', 'b', 'c', 'd', 'e', 'f'];
 
     return flw.eachSeries(items, eachItemHandler, function (err, results) {
       expect(err).to.be(null);
@@ -317,9 +317,9 @@ describe('.times', function () {
 
 describe('.wrap', function () {
   it('.wrap()', function (done) {
-    var expectedResult = 'expectedResult';
+    const expectedResult = 'expectedResult';
 
-    var obj = {
+    const obj = {
       value: 42,
 
       getValue : function getValue(expected, cb) {
