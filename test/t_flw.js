@@ -76,277 +76,274 @@ describe('Context handling', function () {
 });
 
 
-describe('Basic operations', function () {
+describe('.series', function () {
+  it('.series()', function (done) {
+    return flw.series([
+      pre_a,
+      pre_b
+    ], onSeriesDone);
 
-  describe('.series', function () {
-    it('.series()', function (done) {
-      return flw.series([
-        pre_a,
-        pre_b
-      ], onSeriesDone);
+    function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
+    }
+  });
 
-      function onSeriesDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      }
-    });
+  it('.series with return key', function (done) {
+    return flw.series([
+      pre_a,
+      pre_b
+    ], 'pre_a', onSeriesDone);
 
-    it('.series with return key', function (done) {
-      return flw.series([
-        pre_a,
-        pre_b
-      ], 'pre_a', onSeriesDone);
+    function onSeriesDone(err, value) {
+      expect(err).to.be(null);
+      expect(value).to.be('pre_a');
+      return done();
+    }
+  });
 
-      function onSeriesDone(err, value) {
-        expect(err).to.be(null);
-        expect(value).to.be('pre_a');
-        return done();
-      }
-    });
-
-    it('.make.series()', function (done) {
-      var fn = flw.make.series([
-        pre_a,
-        pre_b
-      ]);
-      return fn(function onMakeSeriesDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      });
-    });
-
-    it('.make.series() with return key', function (done) {
-      var fn = flw.make.series([
-        pre_a,
-        pre_b
-      ], 'pre_a');
-      return fn(function onMakeSeriesDone(err, value) {
-        expect(err).to.be(null);
-        expect(value).to.be('pre_a');
-        return done();
-      });
-    });
-
-    it('.series() with injected context', function (done) {
-      var preSet = {preset: 'preset'};
-
-      return flw.series([
-        pre_a,
-        pre_b
-      ], preSet, function onSeriesDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('preset', 'preset');
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      });
-    });
-
-    it('.series() - no functions', function (done) {
-      return flw.series([], done);
+  it('.make.series()', function (done) {
+    var fn = flw.make.series([
+      pre_a,
+      pre_b
+    ]);
+    return fn(function onMakeSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
     });
   });
 
-  describe('.parallel', function () {
-    it('.parallel()', function (done) {
-      return flw.parallel([
-        pre_a,
-        pre_b
-      ], onParallelDone);
-
-      function onParallelDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      }
-    });
-
-    it('.parallel() with return key', function (done) {
-      return flw.parallel([
-        pre_a,
-        pre_b
-      ], 'pre_b', onParallelDone);
-
-      function onParallelDone(err, value) {
-        expect(err).to.be(null);
-        expect(value).to.be('pre_b');
-        return done();
-      }
-    });
-
-    it('.make.parallel()', function (done) {
-      var fn = flw.make.parallel([
-        pre_a,
-        pre_b
-      ]);
-      return fn(function onMakeParallelDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      });
-    });
-
-    it('.make.parallel() with return key', function (done) {
-      var premadeContext = {
-        premade: 1,
-      };
-      var fn = flw.make.parallel([
-        pre_a,
-        pre_b
-      ], premadeContext, 'pre_b');
-      return fn(function onMakeParallelDone(err, value) {
-        expect(err).to.be(null);
-        expect(value).to.be('pre_b');
-        return done();
-      });
-    });
-
-    it('.parallel() with injected context', function (done) {
-      var preSet = {preset: 'preset'};
-
-      return flw.parallel([
-        pre_a,
-        pre_b
-      ], preSet, function onSeriesDone(err, context) {
-        expect(err).to.be(null);
-        expect(context).to.have.property('preset', 'preset');
-        expect(context).to.have.property('pre_a', 'pre_a');
-        expect(context).to.have.property('pre_b', 'pre_b');
-        return done();
-      });
-    });
-
-    it('.parallel() - no functions', function (done) {
-      return flw.parallel([], done);
-    });
-
-    it('.parallel() - error handling', function (done) {
-      return flw.parallel([
-        dummyErrHandler,
-        dummyErrHandler
-      ], function (err) {
-        expect(err.toString()).to.be('Error: someErrorOccured');
-        return done();
-      });
+  it('.make.series() with return key', function (done) {
+    var fn = flw.make.series([
+      pre_a,
+      pre_b
+    ], 'pre_a');
+    return fn(function onMakeSeriesDone(err, value) {
+      expect(err).to.be(null);
+      expect(value).to.be('pre_a');
+      return done();
     });
   });
 
-  describe('.each', function () {
-    it('.each()', function (done) {
-      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+  it('.series() with injected context', function (done) {
+    var preSet = {preset: 'preset'};
 
-      return flw.each(items, eachItemHandler, function (err, results) {
-        expect(err).to.be(null);
-        expect(results.length).to.be(items.length);
-        expect(results).to.contain('aa');
-        expect(results).to.contain('ff');
-        expect(results).have.length(items.length);
-        return done();
-      });
-
-      function eachItemHandler(item, cb) {
-        return cb(null, item+item);
-      }
-    });
-
-    it('.each() - no items', function (done) {
-      return flw.each([], eachHandler, function (err, results) {
-        expect(err).to.be(null);
-        expect(results.length).to.be(0);
-        return done();
-      });
-
-      function eachHandler(item, cb) {
-        return cb();
-      }
-    });
-
-    it('.eachSeries()', function (done) {
-      var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-
-      return flw.eachSeries(items, eachItemHandler, function (err, results) {
-        expect(err).to.be(null);
-        expect(results.length).to.be(items.length);
-        expect(results).to.contain('aa');
-        expect(results).to.contain('ff');
-        expect(results).have.length(items.length);
-        return done();
-      });
-
-      function eachItemHandler(item, cb) {
-        return cb(null, item + item);
-      }
+    return flw.series([
+      pre_a,
+      pre_b
+    ], preSet, function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('preset', 'preset');
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
     });
   });
 
-  describe('.n', function () {
-    it('.n()', function (done) {
-      return flw.n(3, doTimes, function (err, results) {
-        if (err) return done(err);
+  it('.series() - no functions', function (done) {
+    return flw.series([], done);
+  });
+});
 
-        expect(results).to.eql(['a0', 'a1', 'a2']);
-        return done();
-      });
+describe('.parallel', function () {
+  it('.parallel()', function (done) {
+    return flw.parallel([
+      pre_a,
+      pre_b
+    ], onParallelDone);
 
-      function doTimes(index, cb) {
-        return cb(null, 'a'+index);
-      }
+    function onParallelDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
+    }
+  });
+
+  it('.parallel() with return key', function (done) {
+    return flw.parallel([
+      pre_a,
+      pre_b
+    ], 'pre_b', onParallelDone);
+
+    function onParallelDone(err, value) {
+      expect(err).to.be(null);
+      expect(value).to.be('pre_b');
+      return done();
+    }
+  });
+
+  it('.make.parallel()', function (done) {
+    var fn = flw.make.parallel([
+      pre_a,
+      pre_b
+    ]);
+    return fn(function onMakeParallelDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
     });
   });
 
-  // should be deprecated, does not pass the index
-  //  but I know of code that uses it :(
-  describe('.times', function () {
-    it('.times()', function (done) {
-      return flw.times(2, doTimes, function (err, results) {
-        if (err) return done(err);
-
-        expect(results).to.eql(['a', 'a']);
-        return done();
-      });
-
-      function doTimes(cb) {
-        return cb(null, 'a');
-      }
+  it('.make.parallel() with return key', function (done) {
+    var premadeContext = {
+      premade: 1,
+    };
+    var fn = flw.make.parallel([
+      pre_a,
+      pre_b
+    ], premadeContext, 'pre_b');
+    return fn(function onMakeParallelDone(err, value) {
+      expect(err).to.be(null);
+      expect(value).to.be('pre_b');
+      return done();
     });
   });
 
-  describe('.wrap', function () {
-    it('.wrap()', function (done) {
-      var expectedResult = 'expectedResult';
+  it('.parallel() with injected context', function (done) {
+    var preSet = {preset: 'preset'};
 
-      var obj = {
-        value: 42,
+    return flw.parallel([
+      pre_a,
+      pre_b
+    ], preSet, function onSeriesDone(err, context) {
+      expect(err).to.be(null);
+      expect(context).to.have.property('preset', 'preset');
+      expect(context).to.have.property('pre_a', 'pre_a');
+      expect(context).to.have.property('pre_b', 'pre_b');
+      return done();
+    });
+  });
 
-        getValue : function getValue(expected, cb) {
-          if (cb === undefined && typeof(expected) === 'function') {
-            cb = expected;
-            expected = undefined;
-          }
-          if (expected) return cb(null, expected);
+  it('.parallel() - no functions', function (done) {
+    return flw.parallel([], done);
+  });
 
-          return cb(null, this.value);
+  it('.parallel() - error handling', function (done) {
+    return flw.parallel([
+      dummyErrHandler,
+      dummyErrHandler
+    ], function (err) {
+      expect(err.toString()).to.be('Error: someErrorOccured');
+      return done();
+    });
+  });
+});
+
+describe('.each', function () {
+  it('.each()', function (done) {
+    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+    return flw.each(items, eachItemHandler, function (err, results) {
+      expect(err).to.be(null);
+      expect(results.length).to.be(items.length);
+      expect(results).to.contain('aa');
+      expect(results).to.contain('ff');
+      expect(results).have.length(items.length);
+      return done();
+    });
+
+    function eachItemHandler(item, cb) {
+      return cb(null, item+item);
+    }
+  });
+
+  it('.each() - no items', function (done) {
+    return flw.each([], eachHandler, function (err, results) {
+      expect(err).to.be(null);
+      expect(results.length).to.be(0);
+      return done();
+    });
+
+    function eachHandler(item, cb) {
+      return cb();
+    }
+  });
+
+  it('.eachSeries()', function (done) {
+    var items = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+    return flw.eachSeries(items, eachItemHandler, function (err, results) {
+      expect(err).to.be(null);
+      expect(results.length).to.be(items.length);
+      expect(results).to.contain('aa');
+      expect(results).to.contain('ff');
+      expect(results).have.length(items.length);
+      return done();
+    });
+
+    function eachItemHandler(item, cb) {
+      return cb(null, item + item);
+    }
+  });
+});
+
+describe('.n', function () {
+  it('.n()', function (done) {
+    return flw.n(3, doTimes, function (err, results) {
+      if (err) return done(err);
+
+      expect(results).to.eql(['a0', 'a1', 'a2']);
+      return done();
+    });
+
+    function doTimes(index, cb) {
+      return cb(null, 'a'+index);
+    }
+  });
+});
+
+// should be deprecated, does not pass the index
+//  but I know of code that uses it :(
+describe('.times', function () {
+  it('.times()', function (done) {
+    return flw.times(2, doTimes, function (err, results) {
+      if (err) return done(err);
+
+      expect(results).to.eql(['a', 'a']);
+      return done();
+    });
+
+    function doTimes(cb) {
+      return cb(null, 'a');
+    }
+  });
+});
+
+describe('.wrap', function () {
+  it('.wrap()', function (done) {
+    var expectedResult = 'expectedResult';
+
+    var obj = {
+      value: 42,
+
+      getValue : function getValue(expected, cb) {
+        if (cb === undefined && typeof(expected) === 'function') {
+          cb = expected;
+          expected = undefined;
         }
-      };
+        if (expected) return cb(null, expected);
 
-      return flw.series([
-        flw.wrap(obj.getValue.bind(obj)),
-        flw.wrap(obj.getValue.bind(obj), 'default'),
-        flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
-      ], function onWrapHandlerDone(err, context) {
-        expect(err).to.be(null);
-        expect(context._clean()).to.eql({
-          default: 42,
-          expected: expectedResult
-        });
-        return done();
+        return cb(null, this.value);
+      }
+    };
+
+    return flw.series([
+      flw.wrap(obj.getValue.bind(obj)),
+      flw.wrap(obj.getValue.bind(obj), 'default'),
+      flw.wrap(obj.getValue.bind(obj), [expectedResult], 'expected')
+    ], function onWrapHandlerDone(err, context) {
+      expect(err).to.be(null);
+      expect(context._clean()).to.eql({
+        default: 42,
+        expected: expectedResult
       });
+      return done();
     });
   });
 });
