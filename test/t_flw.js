@@ -83,19 +83,21 @@ describe('Basic operations', function () {
       return flw.series([
         pre_a,
         pre_b
-      ], function onSeriesDone(err, context) {
+      ], onSeriesDone);
+
+      function onSeriesDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
         return done();
-      });
+      }
     });
 
     it('.series with return key', function (done) {
       return flw.series([
         pre_a,
         pre_b
-      ], onSeriesDone, 'pre_a');
+      ], 'pre_a', onSeriesDone);
 
       function onSeriesDone(err, value) {
         expect(err).to.be(null);
@@ -113,6 +115,18 @@ describe('Basic operations', function () {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.make.series() with return key', function (done) {
+      var fn = flw.make.series([
+        pre_a,
+        pre_b
+      ], 'pre_a');
+      return fn(function onMakeSeriesDone(err, value) {
+        expect(err).to.be(null);
+        expect(value).to.be('pre_a');
         return done();
       });
     });
@@ -142,19 +156,21 @@ describe('Basic operations', function () {
       return flw.parallel([
         pre_a,
         pre_b
-      ], function onParallelDone(err, context) {
+      ], onParallelDone);
+
+      function onParallelDone(err, context) {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
         return done();
-      });
+      }
     });
 
     it('.parallel() with return key', function (done) {
       return flw.parallel([
         pre_a,
         pre_b
-      ], onParallelDone, 'pre_b');
+      ], 'pre_b', onParallelDone);
 
       function onParallelDone(err, value) {
         expect(err).to.be(null);
@@ -172,6 +188,21 @@ describe('Basic operations', function () {
         expect(err).to.be(null);
         expect(context).to.have.property('pre_a', 'pre_a');
         expect(context).to.have.property('pre_b', 'pre_b');
+        return done();
+      });
+    });
+
+    it('.make.parallel() with return key', function (done) {
+      var premadeContext = {
+        premade: 1,
+      };
+      var fn = flw.make.parallel([
+        pre_a,
+        pre_b
+      ], premadeContext, 'pre_b');
+      return fn(function onMakeParallelDone(err, value) {
+        expect(err).to.be(null);
+        expect(value).to.be('pre_b');
         return done();
       });
     });

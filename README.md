@@ -49,16 +49,13 @@ function processFile(filename, done) {
     ]),
     doSomethingLast,
   ];
-  return flw.series(flow, onDone);
-
-  function onDone(err, context) {
+  return flw.series(flow, (err, context) => {
     if (err) return done(err);
 
-    if (context._stopped === 'emptyFile') {
-      return done(null, null);
-    }
+    if (context._stopped === 'emptyFile') return done(null, null);
+
     return done(null, context.result);
-  }
+  });
 }
 
 function getUserData(c, cb) {
@@ -106,10 +103,10 @@ function doSomethingLast(c, cb) {
 
 ## API
 
-### .series([fn, fn], [context], done, [key])
+### .series([fn, fn], [context], [returnKey], done)
 
 Will call the functions in series, you can provide an initial context by passing a context object.
-If key is present only context[key] will be passed to done()
+If `returnKey` is present only `context[returnKey]` will be passed to `done()`
 
 example:
 ```
@@ -122,10 +119,10 @@ flw.series([a, b, c], context, function (err, context) {
 });
 ```
 
-### .parallel([fn, fn], [context], done, [key])
+### .parallel([fn, fn], [context], [returnKey], done)
 
 Will call the functions in parallel, you can provide an initial context by passing a context object.
-If key is present only context[key] will be passed to done()
+If `returnKey` is present only `context[returnKey]` will be passed to `done()`
 
 example:
 ```
@@ -136,9 +133,7 @@ flw.parallel([a, b, c], function (err, context) {
 
 ### .make
 
-With make you can use the flow functions without them directly executing. In this
-way you can compose different flow functions without having to resort to anonymous
-functions or having to `bind` them.
+With make you can use the flow functions without them directly executing. In this way you can compose different flow functions without having to resort to anonymous functions or having to `bind` them.
 
 example:
 ```
@@ -148,7 +143,7 @@ ourSeries(function (err, context) {
 });
 ```
 
-example:
+or, combine flows:
 ```
 flw.series([
   flw.make.parallel([a, b]),

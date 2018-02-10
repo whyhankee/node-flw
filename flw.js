@@ -30,10 +30,18 @@
    * @param {String} [key] context key to return to done()
    * @param {function} done callback
    */
-  fnMap.series = function series(fns, context, done, key) {
-    if (typeof done !== 'function' && typeof context === 'function') {
-      key = done; done = context;
-      context = {};
+  fnMap.series = function series(fns, context, returnKey, done) {
+    if (typeof done !== 'function') {
+      if (typeof context === 'function') {
+        done = context; returnKey = undefined; context = {};
+      } else if (typeof returnKey === 'function') {
+        done = returnKey;
+        if (typeof context === 'object') {
+          returnKey = undefined;
+        } else {
+          returnKey = context; context = {};
+        }
+      }
     }
     var fnIterator = 0;
     var numTodo = fns.length;
@@ -53,7 +61,7 @@
       if (err) return done(err, context);
 
       if (++fnIterator >= numTodo) {
-        return done(null, key ? context[key] : context);
+        return done(null, returnKey ? context[returnKey] : context);
       }
       return callFunction();
     }
@@ -67,17 +75,24 @@
    * @param {String} [key] context key to return to done()
    * @param {function} done callback
    */
-  fnMap.parallel = function parallel(fns, context, done, key) {
-    if (typeof done !== 'function' && typeof context === 'function') {
-      key = done; done = context;
-      context = {};
+  fnMap.parallel = function parallel(fns, context, returnKey, done) {
+    if (typeof done !== 'function') {
+      if (typeof context === 'function') {
+        done = context; returnKey = undefined; context = {};
+      } else if (typeof returnKey === 'function') {
+        done = returnKey;
+        if (typeof context === 'object') {
+          returnKey = undefined;
+        } else {
+          returnKey = context; context = {};
+        }
+      }
     }
     var numDone = 0;
     var numTodo = fns.length;
     var doneCalled = false;
 
     _checkContext(context);
-
     if (numTodo <= 0) return parallelDone(null);
 
     fns.forEach(function (fn) {
@@ -94,7 +109,7 @@
       if (doneCalled) return;
 
       doneCalled = true;
-      return done(err || null, key ? context[key] : context);
+      return done(err || null, returnKey ? context[returnKey] : context);
     }
   };
 
@@ -243,19 +258,24 @@
     // takes a function and wraps it so that execution is 'postponed'
     function _make(fn) {
       // the user calls this function, e.g. flw.make.series(...)
-      return function madeFunction(fns) {
+      return function madeFunction(fns, context, returnKey) {
+        if (typeof context === 'string') {
+          returnKey = context; context = {};
+        }
         // this function is consumed by flw
-        return function flowFunction(context, done) {
-          if (done === undefined && typeof context === 'function') {
-            done = context;
+        return function flowFunction(context, cb) {
+          // when passed from a flw flow it's called with a premade context
+          // if called directly, create a new context
+          if (cb === undefined && typeof context === 'function') {
+            cb = context;
             context = {};
+            _checkContext(context);
           }
-          _checkContext(context);
 
-          if (typeof done !== 'function') {
-            throw new Error('_make - done !== function');
+          if (typeof cb !== 'function') {
+            throw new Error('flw: .make - cb !== function');
           }
-          return fn(fns, context, done);
+          return fn(fns, context, returnKey, cb);
         };
       };
     }
