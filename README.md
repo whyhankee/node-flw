@@ -164,13 +164,12 @@ example:
 
 ```
 const items = ['a', 'b', 'c', 'd', 'e', 'f'];
-const numParallel = 5;  // optional (default 3)
-flw.each(items, numParallel, doItem, function (err, results) { ... });
+flw.eachSeries(items, doItem, function (err, results) { ... });
 ```
 
 ### .each(items, [numParallel], fn, callback)
 
-Simple async Array processing (in parallel).
+Simple parallel array processing.
 
 *Note: When running `each()` in parallel your items could be returned out of order. If the order is really important use `.eachSeries()`.*
 
