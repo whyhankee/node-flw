@@ -37,10 +37,10 @@ Another callback flow control library, inspired by `async` and `bach`.
 ### Example usage
 
 ```javascript
-var flw = require('flw');
+const flw = require('flw');
 
 function processFile(filename, done) {
-  var flow = [
+  const flow = [
     flw.fwap(fs.readFile, ['./userid.txt', 'utf8'], 'file'),
     getUserData,
     flw.make.parallel([
@@ -52,7 +52,9 @@ function processFile(filename, done) {
   return flw.series(flow, (err, context) => {
     if (err) return done(err);
 
-    if (context._stopped === 'emptyFile') return done(null, null);
+    if (context._stopped === 'emptyFile') {
+      return done(null, null);
+    }
 
     return done(null, context.result);
   });
@@ -65,7 +67,7 @@ function getUserData(c, cb) {
   if (!c.file.length) return c._stop('emptyFile', cb);
 
   // We assume there is one userId in the file
-  var userId = parseInt(c.file);
+  const userId = parseInt(c.file);
 
   // Fetch user from db
   return lookupUserId(userId, c._store('userData', cb));
@@ -74,7 +76,7 @@ function getUserData(c, cb) {
   // return lookupUserId(userId, (err, userData) => {
   //  if (err) return cb(err);
   //
-  //  context.userData = userData;
+  //  c.userData = userData;
   //  return cb();
   // });
 }
@@ -110,7 +112,7 @@ If `returnKey` is present only `context[returnKey]` will be passed to `done()`
 
 example:
 ```
-var context = {
+const context = {
   userid: userId
 };
 
@@ -131,13 +133,15 @@ flw.parallel([a, b, c], function (err, context) {
 });
 ```
 
-### .make
+### .make([fn, fn], [context], [returnKey])
 
 With make you can use the flow functions without them directly executing. In this way you can compose different flow functions without having to resort to anonymous functions or having to `bind` them.
 
 example:
 ```
-var ourSeries = flw.make.series([a, b, c]);
+const ourSeries = flw.make.series([
+  a, b, c
+]);
 ourSeries(function (err, context) {
   console.log(err, context;)
 });
@@ -159,8 +163,8 @@ Simple async Array processing (one at a time).
 example:
 
 ```
-var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-var numParallel = 5;  // optional (default 3)
+const items = ['a', 'b', 'c', 'd', 'e', 'f'];
+const numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
@@ -173,8 +177,8 @@ Simple async Array processing (in parallel).
 example:
 
 ```
-var items = ['a', 'b', 'c', 'd', 'e', 'f'];
-var numParallel = 5;  // optional (default 3)
+const items = ['a', 'b', 'c', 'd', 'e', 'f'];
+const numParallel = 5;  // optional (default 3)
 flw.each(items, numParallel, doItem, function (err, results) { ... });
 ```
 
