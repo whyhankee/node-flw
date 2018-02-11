@@ -222,7 +222,7 @@
   }
 
   /**
-   * Calls fn x times (deprecated: Use .n)
+   * Calls fn x times (without index, deprecated: Use .n)
    * @deprecated use .n()
    * @param {Number} [num] number of times to call fn
    * @param {function} fn function call for each item

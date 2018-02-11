@@ -184,7 +184,7 @@ flw.each(items, numParallel, doItem, function (err, results) { ... });
 
 ### .n(num, fn, callback)
 
-Call an async function `num` times and return the results as an Array
+Call an async function `num` times and return the results as an Array.
 The difference with `.times` is that `.n` will pass the index as first argument
 
 example:
@@ -198,9 +198,11 @@ function doItem(index, done) {
 ```
 
 
-### .times(num, fn, callback) - deprecated, use .n()
+### .times(num, fn, callback)
 
-Call an async function `num` times and return the results as an Array
+This function is deprecated, use `.n()`.
+
+Call an async function `num` times and return the results as an Array.
 
 example:
 
