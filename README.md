@@ -10,24 +10,9 @@ Another callback flow control library, inspired by `async` and `bach`.
 
 ## What / Why
 
-`async` is the defacto standard for callback flow control. I do have some issues here that I would like to improve:
-
-* I'm always struggling with combinations of `auto`, `series`, `parallel`, `waterfall` and keeping references to the results from the called functions. It seems to boil down to either:
-
-	* Assign the results to variables in an outer scope - yuck. This would also require you to use inline functions which gives long messy functions and a performance hit since the functions need to be created every-time the funcion gets called.
-
-	* Dragging everything with you in a waterfall during the entire flow - yuck. When you need to retain more than a few result variables this get messy real fast. It would also limit the beneficial use of parallel functions half-way.
-
-	* Use `async.auto` - Close, however, the dependency map is easy to get wrong over time.
-
-  * So, in `flw` every function gets called with a context object to store and retrieve data. The context object also has some helper methods.
-
 * Better way to build complex flows, *very heavy* inspired by the elegant  <https://github.com/gulpjs/bach>
-
 * Be able to stop the flow, keeping the err mechanism for system-errors - Sometimes there is just no more work to be done. Only useful in a `.series()`
-
 * Auto-avoid 'callback on the same tick' stack-overflow issues, all functions will be called with `setImmediate()` (or `setTimeout()` in a browser).
-
 
 *Note*
 
@@ -69,16 +54,8 @@ function getUserData(c, cb) {
   // We assume there is one userId in the file
   const userId = parseInt(c.file);
 
-  // Fetch user from db
+  // Fetch user from db, save in context
   return lookupUserId(userId, c._store('userData', cb));
-
-  // or, same as above ..
-  // return lookupUserId(userId, (err, userData) => {
-  //  if (err) return cb(err);
-  //
-  //  c.userData = userData;
-  //  return cb();
-  // });
 }
 
 function doSomething(c, cb) {
@@ -197,9 +174,7 @@ function doItem(index, done) {
 ```
 
 
-### .times(num, fn, callback)
-
-This function is deprecated, use `.n()`.
+### .times(num, fn, callback) (deprecated, use .n())
 
 Call an async function `num` times and return the results as an Array.
 
