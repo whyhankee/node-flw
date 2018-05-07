@@ -1,5 +1,9 @@
 ## flw changelog
 
+#### v0.1.3
+
+* Update dependencies (fix vulnerable dependency)
+
 #### v0.1.2
 
 * .series & .parallel: Change returnKey argument (before cb)
